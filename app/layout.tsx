@@ -5,7 +5,7 @@ import { Inter, Libre_Baskerville } from "next/font/google";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sacramento Planner",
+  title: "Sacrament Meetings",
   description:
     "Plan and explore Sacrament Meetings with detail.",
 };
