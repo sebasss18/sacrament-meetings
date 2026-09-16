@@ -23,7 +23,7 @@ export default function CurrentMeetingPage() {
     <main>
       <h1 className="mb-6 text-3xl font-bold">Current Meeting</h1>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-800">
         <MeetingDetail meeting={upcomingMeeting} />
       </div>
     </main>
