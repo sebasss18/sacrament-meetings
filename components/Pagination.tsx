@@ -28,8 +28,8 @@ export function Pagination({ totalPages }: { totalPages: number }) {
           Previous
         </span>
       )}
-      <span className="px-6 py-2 bg-slate-800 text-white rounded-full">
-        Page {currentPage} of {totalPages}
+      <span className="px-2 py-2 text-slate-800">
+        {currentPage} of {totalPages}
       </span>
       {currentPage < totalPages ? (
         <Link
