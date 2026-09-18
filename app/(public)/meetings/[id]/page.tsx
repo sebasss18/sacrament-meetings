@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
-import MeetingDetail from "../../../components/MeetingDetail";
+import MeetingDetail from "../../../../components/MeetingDetail";
 import { getMeetingById } from "@/lib/meetings-db";
+
+export const dynamic = "force-dynamic";
 
 export default async function MeetingPage({
   params,
@@ -13,7 +15,7 @@ export default async function MeetingPage({
     notFound();
   }
 
-  const meeting = getMeetingById(Number(id));
+  const meeting = await getMeetingById(Number(id));
 
   if (!meeting) {
     notFound();

@@ -1,8 +1,8 @@
-import MeetingDetail from "../../../components/MeetingDetail";
-import { getMeetings } from "../../../lib/meetings-db";
+import MeetingDetail from "../../../../components/MeetingDetail";
+import { getMeetings } from "../../../../lib/meetings-db";
 
-export default function CurrentMeetingPage() {
-  const meetings = getMeetings();
+export default async function CurrentMeetingPage() {
+  const meetings = await getMeetings();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 

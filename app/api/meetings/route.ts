@@ -5,7 +5,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
 
-    const meetings = getMeetings();
+    const meetings = await getMeetings();
 
     const filteredMeetings = date
     ? meetings.filter((meeting) => meeting.date === date)

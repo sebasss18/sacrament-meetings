@@ -1,281 +1,114 @@
+import { neon } from "@neondatabase/serverless";
 import type { SacramentMeeting } from "./types";
 
-const meetings: SacramentMeeting[] = [
-  {
-    id: 1,
-    date: "2026-08-16",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Jose Cano",
-    openingHymn: { number: 85, title: "How Firm a Foundation" },
-    openingPrayer: "Silvanna Rea Montoya",
-    wardBusiness: [],
-    stakeBusiness: false,
-    sacramentHymn: { number: 172, title: "In Memory of the Crucified" },
-    speakers: [
-      {
-        name: "Laura Rea Montoya",
-        topic: "Faith in Jesus Christ",
-        type: "speaker",
-      },
-      {
-        name: "Saul Sebastian Bernal Sotelo",
-        topic: "Following the Savior",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 98, title: "I Need Thee Every Hour" },
-    closingPrayer: "Fabian Ignacio Bernal Losoya",
-    announcements: ["Fast Sunday"],
-  },
-  {
-    id: 2,
-    date: "2026-08-23",
-    meetingType: "testimony",
-    presiding: "Bishop Galvan",
-    conducting: "Jesus David",
-    openingHymn: { number: 2, title: "The Spirit of God" },
-    openingPrayer: "Florina Sotelo Mendoza",
-    wardBusiness: [],
-    stakeBusiness: false,
-    sacramentHymn: { number: 175, title: "O God, the Eternal Father" },
-    speakers: [
-      {
-        name: "Pamela Cano Chiu",
-        topic: "The Power of Prayer",
-        type: "speaker",
-      },
-      {
-        name: "Diego Eloy Bernal Sotelo",
-        topic: "Finding Peace Through the Gospel",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 219, title: "Because I Have Been Given Much" },
-    closingPrayer: "Cristobal Ignacio Bernal Sotelo",
-  },
-  {
-    id: 3,
-    date: "2026-08-30",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Galvan",
-    openingHymn: { number: 96, title: "Dearest Children, God Is Near You" },
-    openingPrayer: "Jesus David Yanez",
-    wardBusiness: [{ description: "New member welcome" }],
-    stakeBusiness: false,
-    sacramentHymn: { number: 181, title: "Jesus of Nazareth, Savior and King" },
-    speakers: [
-      {
-        name: "Abish Ayala",
-        topic: "The Importance of Service",
-        type: "speaker",
-      },
-      {
-        name: "Estrella Coronado",
-        topic: "Strengthening Our Families",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 30, title: "Come, Come, Ye Saints" },
-    closingPrayer: "Isaac Coronado",
-    announcements: ["Relief Society activity"],
-  },
-  {
-    id: 4,
-    date: "2026-09-06",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Jose Cano",
-    openingHymn: { number: 66, title: "Rejoice, the Lord Is King!" },
-    openingPrayer: "Perla Munoz",
-    wardBusiness: [{ description: "Ward activity planning" }],
-    stakeBusiness: false,
-    sacramentHymn: { number: 169, title: "As Now We Take the Sacrament" },
-    speakers: [
-      {
-        name: "Sergio Caro",
-        topic: "Remembering Jesus Christ",
-        type: "speaker",
-      },
-      {
-        name: "Paul Barron",
-        topic: "Serving in the Church",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 81, title: "Press Forward, Saints" },
-    closingPrayer: "Paulina Barron",
-    announcements: ["Ward conference preparation"],
-  },
-  {
-    id: 5,
-    date: "2026-09-13",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Jesus David",
-    openingHymn: { number: 3, title: "Now We Sing Our Praise" },
-    openingPrayer: "Paola Barron",
-    wardBusiness: [{ description: "Ward conference preparation" }],
-    stakeBusiness: false,
-    sacramentHymn: { number: 188, title: "Thy Will, O Lord, Be Done" },
-    speakers: [
-      {
-        name: "Mauren Cano",
-        topic: "Faith and Trust in God",
-        type: "speaker",
-      },
-      {
-        name: "Enedina Maya",
-        topic: "Living the Gospel Daily",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 152, title: "God Be with You Till We Meet Again" },
-    closingPrayer: "Elias Hernandez",
-    announcements: ["Ward activity: September 15"],
-  },
-  {
-    id: 6,
-    date: "2026-09-20",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Galvan",
-    openingHymn: { number: 85, title: "How Firm a Foundation" },
-    openingPrayer: "Alejandra Olgin",
-    wardBusiness: [],
-    stakeBusiness: false,
-    sacramentHymn: { number: 175, title: "O God, the Eternal Father" },
-    speakers: [
-      {
-        name: "Enrique Lopez",
-        topic: "The Blessings of the Sabbath",
-        type: "speaker",
-      },
-      {
-        name: "Jairo Lopez",
-        topic: "Following Jesus Christ",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 219, title: "Because I Have Been Given Much" },
-    closingPrayer: "Diana Garcia",
-  },
-  {
-    id: 7,
-    date: "2026-09-27",
-    meetingType: "stake",
-    presiding: "Bishop Galvan",
-    conducting: "Jose Cano",
-    openingHymn: { number: 66, title: "Rejoice, the Lord Is King!" },
-    openingPrayer: "Eduardo Badillo",
-    wardBusiness: [],
-    stakeBusiness: true,
-    sacramentHymn: { number: 181, title: "Jesus of Nazareth, Savior and King" },
-    speakers: [
-      {
-        name: "Zarah Badillo",
-        topic: "Strengthening Families",
-        type: "speaker",
-      },
-      {
-        name: "Alejandro Arvayo",
-        topic: "Serving Others",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 30, title: "Come, Come, Ye Saints" },
-    closingPrayer: "Iraedali Duran",
-  },
-  {
-    id: 8,
-    date: "2026-10-04",
-    meetingType: "general",
-    presiding: "Bishop Galvan",
-    conducting: "Jesus David",
-    openingHymn: { number: 3, title: "Now We Sing Our Praise" },
-    openingPrayer: "Iker Arvayo",
-    wardBusiness: [{ description: "Sustaining of ward officers" }],
-    stakeBusiness: true,
-    sacramentHymn: { number: 172, title: "In Memory of the Crucified" },
-    speakers: [
-      {
-        name: "Derek Arvayo",
-        topic: "Following the Savior",
-        type: "speaker",
-      },
-      {
-        name: "Alexa Arvayo",
-        topic: "Living with Gratitude",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 152, title: "God Be with You Till We Meet Again" },
-    closingPrayer: "Ian Arvayo",
-    announcements: ["General conference weekend"],
-  },
-  {
-    id: 9,
-    date: "2026-10-11",
-    meetingType: "regular",
-    presiding: "Bishop Galvan",
-    conducting: "Galvan",
-    openingHymn: { number: 96, title: "Dearest Children, God Is Near You" },
-    openingPrayer: "Silvanna Rea Montoya",
-    wardBusiness: [{ description: "Ward service project" }],
-    stakeBusiness: false,
-    sacramentHymn: { number: 169, title: "As Now We Take the Sacrament" },
-    speakers: [
-      {
-        name: "Laura Rea Montoya",
-        topic: "The Role of Faith",
-        type: "speaker",
-      },
-      {
-        name: "Saul Sebastian Bernal Sotelo",
-        topic: "Choosing to Serve",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 81, title: "Press Forward, Saints" },
-    closingPrayer: "Fabian Ignacio Bernal Losoya",
-  },
-  {
-    id: 10,
-    date: "2026-10-18",
-    meetingType: "testimony",
-    presiding: "Bishop Galvan",
-    conducting: "Jose Cano",
-    openingHymn: { number: 2, title: "The Spirit of God" },
-    openingPrayer: "Florina Sotelo Mendoza",
-    wardBusiness: [],
-    stakeBusiness: false,
-    sacramentHymn: { number: 188, title: "Thy Will, O Lord, Be Done" },
-    speakers: [
-      {
-        name: "Pamela Cano Chiu",
-        topic: "The Savior's Love",
-        type: "speaker",
-      },
-      {
-        name: "Diego Eloy Bernal Sotelo",
-        topic: "Sharing the Gospel",
-        type: "speaker",
-      },
-    ],
-    closingHymn: { number: 98, title: "I Need Thee Every Hour" },
-    closingPrayer: "Cristobal Ignacio Bernal Sotelo",
-    announcements: ["Fast Sunday"],
-  },
-];
+let sql: ReturnType<typeof neon> | null = null;
 
-export default meetings;
+function getSql() {
+  if (!sql) {
+    const databaseUrl = process.env.DATABASE_URL;
 
-export function getMeetings(date?: string | null): SacramentMeeting[] {
-  if (date) return meetings.filter((m) => m.date === date);
-  return meetings;
+    if (!databaseUrl) {
+      throw new Error(
+        "DATABASE_URL is not configured. Add it to .env.local or your runtime environment before running Next.js.",
+      );
+    }
+
+    sql = neon(databaseUrl);
+  }
+  return sql;
 }
 
-export function getMeetingById(id: number): SacramentMeeting | null {
-  return meetings.find((m) => m.id === id) ?? null;
+const ITEMS_PER_PAGE = 5;
+
+export async function getMeetings(
+  query: string = "",
+  currentPage: number = 1,
+): Promise<SacramentMeeting[]> {
+  const searchTerm = `%${query}%`;
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const rows = await getSql()`
+    SELECT
+      id,
+      to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type                AS "meetingType",
+      presiding, conducting, announcements,
+      opening_hymn                AS "openingHymn",
+      opening_prayer              AS "openingPrayer",
+      ward_business               AS "wardBusiness",
+      stake_business              AS "stakeBusiness",
+      sacrament_hymn              AS "sacramentHymn",
+      speakers,
+      closing_hymn                AS "closingHymn",
+      closing_prayer              AS "closingPrayer"
+    FROM meetings
+    WHERE
+      presiding     ILIKE ${searchTerm}
+      OR conducting ILIKE ${searchTerm}
+      OR meeting_type ILIKE ${searchTerm}
+      OR speakers::text ILIKE ${searchTerm}
+    ORDER BY date DESC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+  `;
+  return rows as unknown as SacramentMeeting[];
+}
+
+export async function getMeetingsTotalPages(
+  query: string = "",
+): Promise<number> {
+  const searchTerm = `%${query}%`;
+  const rows = await getSql()`
+    SELECT COUNT(*) FROM meetings
+    WHERE
+      presiding     ILIKE ${searchTerm}
+      OR conducting ILIKE ${searchTerm}
+      OR meeting_type ILIKE ${searchTerm}
+      OR speakers::text ILIKE ${searchTerm}
+  `;
+
+  const countRows = rows as Array<{ count: string | number }>;
+  const totalCount = Number(countRows[0]?.count ?? 0);
+
+  return Math.ceil(totalCount / ITEMS_PER_PAGE);
+}
+
+export async function getMeetingById(
+  id: number,
+): Promise<SacramentMeeting | null> {
+  const rows = await getSql()`
+    SELECT
+      id,
+      to_char(date, 'YYYY-MM-DD') AS "date",
+      meeting_type                AS "meetingType",
+      presiding, conducting, announcements,
+      opening_hymn                AS "openingHymn",
+      opening_prayer              AS "openingPrayer",
+      ward_business               AS "wardBusiness",
+      stake_business              AS "stakeBusiness",
+      sacrament_hymn              AS "sacramentHymn",
+      speakers,
+      closing_hymn                AS "closingHymn",
+      closing_prayer              AS "closingPrayer"
+    FROM meetings WHERE id = ${id}
+  `;
+
+  const meetingRows = rows as Array<Record<string, unknown>>;
+  return (meetingRows[0] as unknown as SacramentMeeting) ?? null;
+}
+
+export async function addMeeting(
+  _data: Omit<SacramentMeeting, "id">,
+): Promise<SacramentMeeting> {
+  throw new Error("addMeeting: database implementation coming in Week 04");
+}
+
+export async function updateMeeting(
+  _id: number,
+  _updates: Partial<SacramentMeeting>,
+): Promise<SacramentMeeting | null> {
+  throw new Error("updateMeeting: database implementation coming in Week 04");
+}
+
+export async function deleteMeeting(_id: number): Promise<boolean> {
+  throw new Error("deleteMeeting: database implementation coming in Week 04");
 }
