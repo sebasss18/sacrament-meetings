@@ -11,6 +11,7 @@ export default function MeetingsLayout({
   const pathname = usePathname();
   const isAllMeetings = pathname === "/meetings";
   const isCurrentMeeting = pathname === "/meetings/current";
+  const isCreateMeeting = pathname === "/meetings/new";
 
   return (
     <section>
@@ -32,6 +33,15 @@ export default function MeetingsLayout({
           }`}
         >
           Current Meeting
+        </Link>
+        <Link
+          href="/meetings/new"
+          aria-current={isCreateMeeting ? "page" : undefined}
+          className={`transition-all duration-300 ${
+            isCreateMeeting ? "font-bold" : ""
+          }`}
+        >
+          Create Meeting
         </Link>
       </nav>
       {children}

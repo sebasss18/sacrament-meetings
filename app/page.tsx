@@ -25,12 +25,21 @@ export default function Home() {
             announcements, and ward business.
           </p>
 
-          <Link
-            href="/meetings"
-            className="rounded-full bg-[#17365d] px-6 py-3 font-semibold transition duration-300 hover:scale-105 hover:bg-[#244d7c]"
-          >
-            View Meetings
-          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/meetings"
+              className="rounded-full bg-[#17365d] px-6 py-3 font-semibold transition duration-300 hover:scale-105 hover:bg-[#244d7c]"
+            >
+              View Meetings
+            </Link>
+
+            <Link
+              href="/meetings/new"
+              className="rounded-full bg-slate-600 px-6 py-3 font-semibold transition duration-300 hover:scale-105 hover:bg-slate-500"
+            >
+              Create Meeting
+            </Link>
+          </div>
         </div>
       </section>
     </main>
