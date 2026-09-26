@@ -9,7 +9,24 @@ import {
   deleteMeeting as deleteMeetingDb,
 } from "@/lib/meetings-db";
 
-export async function createMeeting(formData: FormData): Promise<void> {
+export type FormState = {
+  message: string;
+  errors?: Record<string, string[]>;
+};
+
+function getAnnouncements(formData: FormData): string[] {
+  return formData.getAll("announcements").flatMap((value) =>
+    String(value)
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean),
+  );
+}
+
+export async function createMeeting(
+  prevState: FormState | undefined,
+  formData: FormData,
+): Promise<FormState> {
   const speakerNames = formData.getAll("speakerName").map(String);
   const speakerTopics = formData.getAll("speakerTopic").map(String);
   const speakerTypes = formData.getAll("speakerType").map(String);
@@ -61,10 +78,32 @@ export async function createMeeting(formData: FormData): Promise<void> {
   const validation = MeetingFormSchema.safeParse(data);
 
   if (!validation.success) {
-    throw new Error(validation.error.message);
+    const errors: Record<string, string[]> = {};
+
+    validation.error.issues.forEach((issue) => {
+      const path = issue.path.join(".");
+
+      if (!errors[path]) {
+        errors[path] = [];
+      }
+
+      errors[path].push(issue.message);
+    });
+
+    return {
+      message: "Please correct the errors in the form.",
+      errors,
+    };
   }
 
-  await createMeetingDb(validation.data);
+  try {
+    await createMeetingDb(validation.data);
+  } catch {
+    return {
+      message: "There was a problem creating the meeting. Please try again.",
+      errors: {},
+    };
+  }
 
   revalidatePath("/meetings");
   redirect("/meetings");
@@ -72,8 +111,9 @@ export async function createMeeting(formData: FormData): Promise<void> {
 
 export async function updateMeeting(
   id: number,
+  prevState: FormState | undefined,
   formData: FormData,
-): Promise<void> {
+): Promise<FormState> {
   const speakerNames = formData.getAll("speakerName").map(String);
   const speakerTopics = formData.getAll("speakerTopic").map(String);
   const speakerTypes = formData.getAll("speakerType").map(String);
@@ -89,7 +129,7 @@ export async function updateMeeting(
     meetingType: formData.get("meetingType"),
     presiding: formData.get("presiding"),
     conducting: formData.get("conducting"),
-    announcements: formData.getAll("announcements").map(String),
+    announcements: getAnnouncements(formData),
 
     openingHymn: {
       number: Number(formData.get("openingHymnNumber")),
@@ -125,18 +165,48 @@ export async function updateMeeting(
   const validation = MeetingFormSchema.safeParse(data);
 
   if (!validation.success) {
-    throw new Error(validation.error.message);
+    const errors: Record<string, string[]> = {};
+
+    validation.error.issues.forEach((issue) => {
+      const path = issue.path.join(".");
+
+      if (!errors[path]) {
+        errors[path] = [];
+      }
+
+      errors[path].push(issue.message);
+    });
+
+    return {
+      message: "Please correct the errors in the form.",
+      errors,
+    };
   }
 
-  await updateMeetingDb(id, validation.data);
+  try {
+    await updateMeetingDb(id, validation.data);
+  } catch {
+    return {
+      message: "There was a problem updating the meeting. Please try again.",
+      errors: {},
+    };
+  }
 
   revalidatePath("/meetings");
   redirect("/meetings");
 }
 
-export async function deleteMeeting(id: number): Promise<void> {
-  await deleteMeetingDb(id);
+export async function deleteMeeting(id: number): Promise<FormState> {
+  try {
+    await deleteMeetingDb(id);
+  } catch {
+    return {
+      message: "Could not delete the meeting. Please try again.",
+      errors: {},
+    };
+  }
 
   revalidatePath("/meetings");
   redirect("/meetings");
+  return { message: "" };
 }

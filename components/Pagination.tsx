@@ -8,6 +8,10 @@ export function Pagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
 
+  if (totalPages <= 0) {
+    return null;
+  }
+
   function createPageURL(page: number) {
     const params = new URLSearchParams(searchParams);
     params.set("page", String(page));

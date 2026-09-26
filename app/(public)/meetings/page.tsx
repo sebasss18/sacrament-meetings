@@ -24,13 +24,17 @@ export default async function MeetingsPage(props: {
 
       <MeetingSearch />
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        {meetings.map((meeting) => (
-          <MeetingCard key={meeting.id} meeting={meeting} />
-        ))}
-      </div>
+      {meetings.length === 0 ? (
+        <p className="mt-8 text-slate-600">No meetings found.</p>
+      ) : (
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {meetings.map((meeting) => (
+            <MeetingCard key={meeting.id} meeting={meeting} />
+          ))}
+        </div>
+      )}
 
-      <Pagination totalPages={totalPages} />
+      {totalPages > 0 && <Pagination totalPages={totalPages} />}
     </main>
   );
 }

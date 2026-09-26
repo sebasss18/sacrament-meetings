@@ -1,7 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { createMeeting } from "@/lib/actions";
+import { useActionState, useState } from "react";
+import { createMeeting, type FormState } from "@/lib/actions";
+
+const initialState: FormState = {
+  message: "",
+  errors: {},
+};
 
 export default function CreateMeetingForm() {
   const [speakers, setSpeakers] = useState([
@@ -12,11 +17,21 @@ export default function CreateMeetingForm() {
     },
   ]);
 
+  const [state, formAction, isPending] = useActionState(
+    createMeeting,
+    initialState,
+  );
+
   return (
     <form
-      action={createMeeting}
+      action={formAction}
       className="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow-xl ring-1 ring-slate-200"
     >
+      {state.message && (
+        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {state.message}
+        </p>
+      )}
       <div className="mb-8 border-b border-slate-200 pb-6">
         <h1 className="text-3xl font-bold text-slate-800">
           Create Sacrament Meeting
@@ -45,8 +60,14 @@ export default function CreateMeetingForm() {
               name="date"
               type="date"
               required
+              aria-describedby="date-error"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="date-error" aria-live="polite">
+              {state.errors?.date?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -60,6 +81,7 @@ export default function CreateMeetingForm() {
               id="meetingType"
               name="meetingType"
               required
+              aria-describedby="meetingType-error"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             >
               <option value="">Select a type</option>
@@ -68,6 +90,11 @@ export default function CreateMeetingForm() {
               <option value="stake">Stake</option>
               <option value="general">General</option>
             </select>
+            <div id="meetingType-error" aria-live="polite">
+              {state.errors?.meetingType?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -82,9 +109,15 @@ export default function CreateMeetingForm() {
               name="presiding"
               type="text"
               required
+              aria-describedby="presiding-error"
               placeholder="Presiding member"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="presiding-error" aria-live="polite">
+              {state.errors?.presiding?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -99,9 +132,15 @@ export default function CreateMeetingForm() {
               name="conducting"
               type="text"
               required
+              aria-describedby="conducting-error"
               placeholder="Conducting member"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="conducting-error" aria-live="polite">
+              {state.errors?.conducting?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -113,11 +152,21 @@ export default function CreateMeetingForm() {
         </h2>
 
         <textarea
+          id="announcements"
           name="announcements"
+          aria-describedby="announcements-error"
           rows={3}
           placeholder="Enter announcements..."
           className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
         />
+        <label htmlFor="announcements" className="sr-only">
+          Announcements
+        </label>
+        <div id="announcements-error" aria-live="polite">
+          {state.errors?.announcements?.map((error) => (
+            <p key={error}>{error}</p>
+          ))}
+        </div>
       </section>
 
       {/* Opening */}
@@ -139,9 +188,15 @@ export default function CreateMeetingForm() {
               type="number"
               min="1"
               required
+              aria-describedby="openingHymnNumber-error"
               placeholder="e.g. 85"
               className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="openingHymnNumber-error" aria-live="polite">
+              {state.errors?.["openingHymn.number"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -157,9 +212,15 @@ export default function CreateMeetingForm() {
               name="openingHymnTitle"
               type="text"
               required
+              aria-describedby="openingHymnTitle-error"
               placeholder="e.g. How Firm a Foundation"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="openingHymnTitle-error" aria-live="polite">
+              {state.errors?.["openingHymn.title"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -174,9 +235,15 @@ export default function CreateMeetingForm() {
               name="openingPrayer"
               type="text"
               required
+              aria-describedby="openingPrayer-error"
               placeholder="Person giving the prayer"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="openingPrayer-error" aria-live="polite">
+              {state.errors?.openingPrayer?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -187,22 +254,42 @@ export default function CreateMeetingForm() {
           Ward Business
         </h2>
 
+        <label htmlFor="wardBusiness" className="sr-only">
+          Ward Business
+        </label>
         <textarea
+          id="wardBusiness"
           name="wardBusiness"
+          aria-describedby="wardBusiness-error"
           rows={3}
           placeholder="Enter ward business..."
           className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
         />
+        <div id="wardBusiness-error" aria-live="polite">
+          {state.errors?.wardBusiness?.map((error) => (
+            <p key={error}>{error}</p>
+          ))}
+        </div>
 
-        <label className="mt-4 flex items-center gap-3 text-sm font-medium text-slate-700">
+        <label
+          htmlFor="stakeBusiness"
+          className="mt-4 flex items-center gap-3 text-sm font-medium text-slate-700"
+        >
           <input
+            id="stakeBusiness"
             type="checkbox"
             name="stakeBusiness"
             value="true"
+            aria-describedby="stakeBusiness-error"
             className="h-4 w-4 rounded border-slate-300 text-slate-800 focus:ring-slate-300"
           />
           Stake business
         </label>
+        <div id="stakeBusiness-error" aria-live="polite">
+          {state.errors?.stakeBusiness?.map((error) => (
+            <p key={error}>{error}</p>
+          ))}
+        </div>
       </section>
 
       {/* Sacrament */}
@@ -224,9 +311,15 @@ export default function CreateMeetingForm() {
               type="number"
               min="1"
               required
+              aria-describedby="sacramentHymnNumber-error"
               placeholder="e.g. 85"
               className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="sacramentHymnNumber-error" aria-live="polite">
+              {state.errors?.["sacramentHymn.number"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -242,9 +335,15 @@ export default function CreateMeetingForm() {
               name="sacramentHymnTitle"
               type="text"
               required
+              aria-describedby="sacramentHymnTitle-error"
               placeholder="e.g. How Firm a Foundation"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="sacramentHymnTitle-error" aria-live="polite">
+              {state.errors?.["sacramentHymn.title"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -294,6 +393,7 @@ export default function CreateMeetingForm() {
                     name="speakerName"
                     type="text"
                     required
+                    aria-describedby={`speakerName-${index}-error`}
                     value={speaker.name}
                     onChange={(event) => {
                       const updatedSpeakers = [...speakers];
@@ -303,6 +403,11 @@ export default function CreateMeetingForm() {
                     placeholder="Speaker name"
                     className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
                   />
+                  <div id={`speakerName-${index}-error`} aria-live="polite">
+                    {state.errors?.[`speakers.${index}.name`]?.map((error) => (
+                      <p key={error}>{error}</p>
+                    ))}
+                  </div>
                 </div>
 
                 <div>
@@ -315,6 +420,7 @@ export default function CreateMeetingForm() {
                   <select
                     id={`speakerType-${index}`}
                     name="speakerType"
+                    aria-describedby={`speakerType-${index}-error`}
                     value={speaker.type}
                     onChange={(event) => {
                       const updatedSpeakers = [...speakers];
@@ -326,6 +432,11 @@ export default function CreateMeetingForm() {
                     <option value="speaker">Speaker</option>
                     <option value="musical-number">Musical Number</option>
                   </select>
+                  <div id={`speakerType-${index}-error`} aria-live="polite">
+                    {state.errors?.[`speakers.${index}.type`]?.map((error) => (
+                      <p key={error}>{error}</p>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -341,6 +452,7 @@ export default function CreateMeetingForm() {
                   name="speakerTopic"
                   type="text"
                   required
+                  aria-describedby={`speakerTopic-${index}-error`}
                   value={speaker.topic}
                   onChange={(event) => {
                     const updatedSpeakers = [...speakers];
@@ -350,6 +462,11 @@ export default function CreateMeetingForm() {
                   placeholder="Speaker topic"
                   className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
                 />
+                <div id={`speakerTopic-${index}-error`} aria-live="polite">
+                  {state.errors?.[`speakers.${index}.topic`]?.map((error) => (
+                    <p key={error}>{error}</p>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
@@ -392,9 +509,15 @@ export default function CreateMeetingForm() {
               type="number"
               min="1"
               required
+              aria-describedby="closingHymnNumber-error"
               placeholder="e.g. 85"
               className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="closingHymnNumber-error" aria-live="polite">
+              {state.errors?.["closingHymn.number"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -410,9 +533,15 @@ export default function CreateMeetingForm() {
               name="closingHymnTitle"
               type="text"
               required
+              aria-describedby="closingHymnTitle-error"
               placeholder="e.g. How Firm a Foundation"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="closingHymnTitle-error" aria-live="polite">
+              {state.errors?.["closingHymn.title"]?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -427,9 +556,15 @@ export default function CreateMeetingForm() {
               name="closingPrayer"
               type="text"
               required
+              aria-describedby="closingPrayer-error"
               placeholder="Person giving the prayer"
               className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
             />
+            <div id="closingPrayer-error" aria-live="polite">
+              {state.errors?.closingPrayer?.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -437,9 +572,10 @@ export default function CreateMeetingForm() {
       <div className="flex justify-end border-t border-slate-200 pt-6">
         <button
           type="submit"
-          className="rounded-full bg-slate-800 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+          disabled={isPending}
+          className="rounded-full bg-slate-800 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-500"
         >
-          Create Meeting
+          {isPending ? "Creating..." : "Create Meeting"}
         </button>
       </div>
     </form>
