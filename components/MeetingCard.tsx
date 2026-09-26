@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { SacramentMeeting } from "../lib/types";
-import DeleteMeeting from "./DeleteMeeting";
 
 interface MeetingCardProps {
   meeting: SacramentMeeting;

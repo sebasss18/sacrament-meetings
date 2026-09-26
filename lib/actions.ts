@@ -8,7 +8,6 @@ import {
   updateMeeting as updateMeetingDb,
   deleteMeeting as deleteMeetingDb,
 } from "@/lib/meetings-db";
-import type { SacramentMeeting } from "@/lib/types";
 
 export async function createMeeting(formData: FormData): Promise<void> {
   const speakerNames = formData.getAll("speakerName").map(String);
