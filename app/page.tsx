@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description:
+    "Welcome to the Sacrament Meeting Planner for viewing upcoming meetings and managing ward details.",
+};
 
 export default function Home() {
   return (

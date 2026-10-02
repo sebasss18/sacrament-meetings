@@ -1,5 +1,7 @@
 "use server";
 
+import { AuthError } from "next-auth";
+import { auth, signIn, signOut } from "@/auth";
 import { MeetingFormSchema } from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -14,6 +16,42 @@ export type FormState = {
   errors?: Record<string, string[]>;
 };
 
+export async function authenticate(
+  _prevState: string | undefined,
+  formData: FormData,
+): Promise<string | undefined> {
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: "/meetings",
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return error.type === "CredentialsSignin"
+        ? "Invalid email or password."
+        : "Something went wrong. Please try again.";
+    }
+
+    throw error;
+  }
+}
+
+async function requireOwnerSession() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+}
+
+export async function signOutAction() {
+  await signOut({ redirectTo: "/" });
+}
+
 function getAnnouncements(formData: FormData): string[] {
   return formData.getAll("announcements").flatMap((value) =>
     String(value)
@@ -27,6 +65,8 @@ export async function createMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
+  await requireOwnerSession();
+
   const speakerNames = formData.getAll("speakerName").map(String);
   const speakerTopics = formData.getAll("speakerTopic").map(String);
   const speakerTypes = formData.getAll("speakerType").map(String);
@@ -114,6 +154,8 @@ export async function updateMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
+  await requireOwnerSession();
+
   const speakerNames = formData.getAll("speakerName").map(String);
   const speakerTopics = formData.getAll("speakerTopic").map(String);
   const speakerTypes = formData.getAll("speakerType").map(String);
@@ -197,6 +239,8 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(id: number): Promise<FormState> {
+  await requireOwnerSession();
+
   try {
     await deleteMeetingDb(id);
   } catch {

@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import MeetingCard from "../../../components/MeetingCard";
 import { MeetingSearch } from "@/components/MeetingSearch";
 import { Pagination } from "@/components/Pagination";
 import { getMeetings, getMeetingsTotalPages } from "@/lib/meetings-db";
+
+export const metadata: Metadata = {
+  title: "Meeting Directory",
+  description:
+    "Browse upcoming and past sacrament meetings, explore talks, hymns, and announcements, and filter by date or keyword.",
+};
 
 export const dynamic = "force-dynamic";
 

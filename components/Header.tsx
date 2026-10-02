@@ -1,4 +1,22 @@
 import NavLinks from "./NavLinks";
+import Link from "next/link";
+import { auth } from "@/auth";
+import SignOutButton from "./SignOutButton";
+
+async function AuthControls() {
+  const session = await auth();
+
+  return session?.user ? (
+    <SignOutButton />
+  ) : (
+    <Link
+      href="/login"
+      className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold transition hover:bg-white/10"
+    >
+      Sign In
+    </Link>
+  );
+}
 
 export default function Header() {
   const date = new Date().toLocaleDateString();
@@ -9,7 +27,10 @@ export default function Header() {
         <h1 className="text-2xl font-bold">Rio Sonora</h1>
         <p>{date}</p>
       </div>
-      <NavLinks />
+      <div className="flex items-center gap-5">
+        <NavLinks />
+        <AuthControls />
+      </div>
     </header>
   );
 }

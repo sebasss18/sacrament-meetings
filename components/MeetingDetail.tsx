@@ -1,4 +1,5 @@
 import type { SacramentMeeting } from "../lib/types";
+import { auth } from "@/auth";
 import DeleteMeeting from "./DeleteMeeting";
 import Link from "next/link";
 
@@ -6,7 +7,9 @@ interface MeetingDetailProps {
   meeting: SacramentMeeting;
 }
 
-export default function MeetingDetail({ meeting }: MeetingDetailProps) {
+export default async function MeetingDetail({ meeting }: MeetingDetailProps) {
+  const session = await auth();
+
   return (
     <>
       <article className="mx-auto max-w-3xl space-y-6">
@@ -82,16 +85,18 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
         </section>
       </article>
 
-      <div className="mt-6 flex items-center gap-4">
-        <Link
-          href={`/meetings/${meeting.id}/edit`}
-          className="rounded-full bg-slate-800 px-5 py-2 font-semibold text-white transition duration-300 hover:scale-102 hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
-        >
-          Edit Meeting
-        </Link>
+      {session?.user && (
+        <div className="mt-6 flex items-center gap-4">
+          <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="rounded-full bg-slate-800 px-5 py-2 font-semibold text-white transition duration-300 hover:scale-102 hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+          >
+            Edit Meeting
+          </Link>
 
-        <DeleteMeeting id={meeting.id} />
-      </div>
+          <DeleteMeeting id={meeting.id} />
+        </div>
+      )}
     </>
   );
 }

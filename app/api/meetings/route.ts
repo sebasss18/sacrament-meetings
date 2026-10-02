@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 import { createMeeting, getMeetings } from "@/lib/meetings-db";
 import { MeetingFormSchema } from "@/lib/schemas";
 
@@ -16,6 +17,10 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!(await auth())?.user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const validation = MeetingFormSchema.safeParse(body);

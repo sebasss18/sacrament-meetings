@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sacrament Meetings
 
-## Getting Started
+A Next.js application for planning and browsing sacrament meetings. Public meeting pages remain readable without an account; the single owner signs in to create, edit, or delete meeting plans.
 
-First, run the development server:
+## Run locally
 
-```bash
+Install dependencies and start the development server:
+
+```sh
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configure owner authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Authentication uses Auth.js v5 credentials. Keep the existing database settings in `.env.local`; add the following values to that file (or your deployment environment):
 
-## Learn More
+- `AUTH_SECRET`: generate with `npx auth secret`.
+- `AUTH_EMAIL`: the one email address allowed to manage meetings.
+- `AUTH_PASSWORD_HASH`: a bcrypt hash, never the plain-text password.
 
-To learn more about Next.js, take a look at the following resources:
+Generate the hash interactively; password input is hidden and the password is not written to disk:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm run auth:hash-password
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Copy the resulting hash into `AUTH_PASSWORD_HASH` in `.env.local`. The password must be at least 8 characters. `.env.local` is ignored by Git; do not commit secrets. `.env.example` lists the required authentication variable names.
 
-## Deploy on Vercel
+## Protected operations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/meetings/new` and `/meetings/[id]/edit` redirect unauthenticated visitors to `/login`.
+- Meeting create, update, and delete Server Actions and API mutations check the session on the server.
+- Public meeting browsing and read-only API requests do not require a session.
+- After sign-in, the owner returns to `/meetings`; sign-out clears the session and returns to `/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Verify the flow
+
+1. Configure `AUTH_SECRET`, `AUTH_EMAIL`, `AUTH_PASSWORD_HASH`, and `DATABASE_URL`.
+2. Open `/meetings/new` in a private/incognito window and confirm it redirects to `/login`.
+3. Sign in with the configured owner credentials and confirm the create-meeting route opens.
+4. Sign out from the header, then try `/meetings/new` again; it should redirect back to `/login`.
+5. Submit an unauthenticated `POST`, `PUT`, or `DELETE` request to the meetings API and confirm it returns `401`.
+
+Run `npm run lint` and `npm run build` to validate the project.

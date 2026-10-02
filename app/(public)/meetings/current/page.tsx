@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import MeetingDetail from "../../../../components/MeetingDetail";
 import { getMeetings } from "../../../../lib/meetings-db";
+
+export const metadata: Metadata = {
+  title: "Current Meeting",
+  description:
+    "See the next upcoming sacrament meeting details, including speakers, hymns, ward business, and announcements.",
+};
 
 export default async function CurrentMeetingPage() {
   const meetings = await getMeetings();
