@@ -22,12 +22,13 @@ export default function Header() {
   const date = new Date().toLocaleDateString();
 
   return (
-    <header className="flex items-center justify-between bg-slate-800 p-6 text-white m-2 rounded-xl font-serif">
+    <header className="m-2 flex flex-col gap-5 rounded-xl bg-slate-800 p-5 text-white font-serif sm:flex-row sm:items-center sm:justify-between sm:p-6">
       <div>
         <h1 className="text-2xl font-bold">Rio Sonora</h1>
         <p>{date}</p>
       </div>
-      <div className="flex items-center gap-5">
+
+      <div className="flex items-center justify-between gap-5 sm:justify-end">
         <NavLinks />
         <AuthControls />
       </div>
