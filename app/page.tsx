@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import WardNameForm from "@/components/WardNameForm";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -47,6 +48,7 @@ export default function Home() {
             <p className="mt-7 max-w-xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Organiza las reuniones sacramentales.
             </p>
+
             <p className="mt-1 max-w-xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Administra discursantes, himnos, asignaciones y anuncios con
               claridad y sencillez.
@@ -76,6 +78,9 @@ export default function Home() {
                 Crear reunión
               </Link>
             </div>
+
+            {/* Configuración del nombre del barrio */}
+            <WardNameForm />
 
             <div className="mt-14 flex items-center gap-4 border-t border-white/15 pt-6 text-sm text-slate-300 sm:mt-16">
               <div className="flex -space-x-2" aria-hidden="true">

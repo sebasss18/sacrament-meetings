@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import SignOutButton from "./SignOutButton";
 import HeaderScroll from "./HeaderScroll";
+import WardName from "./WardName";
 
 async function AuthControls() {
   const session = await auth();
@@ -32,7 +33,8 @@ export default function Header() {
   return (
     <HeaderScroll>
       <Link href="/" className="leading-tight">
-        <h1 className="text-2xl font-bold tracking-tight">Rio Sonora</h1>
+        <WardName />
+
         <p className="flex items-center gap-2 text-sm capitalize text-white/60">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-75" />
