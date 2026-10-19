@@ -44,7 +44,7 @@ export default function Header() {
         </p>
       </Link>
 
-      <div className="flex items-center justify-between gap-4 sm:justify-end">
+      <div className="flex flex-row items-center justify-between gap-2 sm:justify-end sm:gap-4">
         <NavLinks />
         <AuthControls />
       </div>

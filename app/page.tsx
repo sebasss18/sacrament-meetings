@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="relative -mt-2 flex flex-1 flex-col bg-slate-950 before:pointer-events-none before:absolute before:inset-x-0 before:-top-20 before:h-20 before:bg-slate-950 before:content-['']">
+    <main className="relative -mt-2 flex flex-1 flex-col bg-slate-950 before:pointer-events-none before:absolute before:inset-x-0 before:-top-32 before:h-32 before:bg-slate-950 before:content-['']">
       <section className="relative isolate flex min-h-[calc(100dvh-80px)] w-full flex-1 items-center overflow-hidden bg-slate-950">
         <Image
           src="/temple-hero-image.jpeg"

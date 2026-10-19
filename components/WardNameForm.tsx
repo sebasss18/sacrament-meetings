@@ -1,13 +1,32 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
+
+function subscribeToWardName(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("wardNameChanged", callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("wardNameChanged", callback);
+  };
+}
+
+function getWardNameSnapshot() {
+  return localStorage.getItem("wardName") || "";
+}
+
+function getServerWardNameSnapshot() {
+  return "";
+}
 
 export default function WardNameForm() {
-  const [initialWardName] = useState(() =>
-    typeof window === "undefined" ? "" : localStorage.getItem("wardName") || "",
+  const savedWardName = useSyncExternalStore(
+    subscribeToWardName,
+    getWardNameSnapshot,
+    getServerWardNameSnapshot,
   );
-  const [wardName, setWardName] = useState(initialWardName);
-  const [saved, setSaved] = useState(Boolean(initialWardName));
+  const [wardName, setWardName] = useState("");
   const [editing, setEditing] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -21,15 +40,15 @@ export default function WardNameForm() {
     window.dispatchEvent(new Event("wardNameChanged"));
 
     setWardName(name);
-    setSaved(true);
     setEditing(false);
   }
 
-  if (saved && !editing) {
+  if (savedWardName && !editing) {
     return (
       <div className="mt-6 flex items-center gap-3">
         <span className="text-sm text-slate-300">
-          Barrio: <span className="font-medium text-white">{wardName}</span>
+          Barrio:{" "}
+          <span className="font-medium text-white">{savedWardName}</span>
         </span>
 
         <button
@@ -76,7 +95,7 @@ export default function WardNameForm() {
           <button
             type="button"
             onClick={() => {
-              setWardName(localStorage.getItem("wardName") || "");
+              setWardName(savedWardName);
               setEditing(false);
             }}
             className="px-3 py-2 text-sm text-slate-300 transition hover:text-white"
