@@ -70,12 +70,20 @@ export default function Home() {
 
               <Link
                 href="/meetings/new"
-                className="inline-flex items-center justify-center gap-3 rounded-xl border border-white/25 bg-white/10 px-7 py-4 font-semibold text-white shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:bg-white/20"
-              >
-                <span aria-hidden="true" className="text-xl leading-none">
+                className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/25 bg-white/10 px-7 py-4 font-semibold text-white shadow-lg backdrop-blur-md outline-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-102 hover:border-white/40 hover:bg-white/20 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-white/50 motion-reduce:transform-none"
+              >                
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[400%] motion-reduce:hidden"
+                />
+
+                <span
+                  aria-hidden="true"
+                  className="relative inline-flex size-6 items-center justify-center text-xl leading-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-90 group-focus-visible:rotate-90 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-focus-visible:rotate-0"
+                >
                   +
                 </span>
-                Crear reunión
+                <span className="relative">Crear reunión</span>
               </Link>
             </div>
 
