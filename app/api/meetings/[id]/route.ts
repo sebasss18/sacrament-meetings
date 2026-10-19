@@ -15,13 +15,19 @@ export async function GET(
   const meetingId = Number(id);
 
   if (!Number.isInteger(meetingId) || meetingId <= 0) {
-    return NextResponse.json({ error: "Invalid meeting ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: "El identificador de la reunión no es válido." },
+      { status: 400 },
+    );
   }
 
   const meeting = await getMeetingById(meetingId);
 
   if (!meeting) {
-    return NextResponse.json({ error: "Meeting not found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "No se encontró la reunión." },
+      { status: 404 },
+    );
   }
 
   return NextResponse.json(meeting);
@@ -32,14 +38,20 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   if (!(await auth())?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { error: "No has iniciado sesión." },
+      { status: 401 },
+    );
   }
 
   const { id } = await params;
   const meetingId = Number(id);
 
   if (!Number.isInteger(meetingId) || meetingId <= 0) {
-    return NextResponse.json({ error: "Invalid meeting ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: "El identificador de la reunión no es válido." },
+      { status: 400 },
+    );
   }
 
   try {
@@ -49,7 +61,7 @@ export async function PUT(
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: "Invalid meeting payload",
+          error: "Los datos de la reunión no son válidos.",
           issues: validation.error.issues,
         },
         { status: 400 },
@@ -58,7 +70,10 @@ export async function PUT(
 
     const existingMeeting = await getMeetingById(meetingId);
     if (!existingMeeting) {
-      return NextResponse.json({ error: "Meeting not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No se encontró la reunión." },
+        { status: 404 },
+      );
     }
 
     const updatedMeeting = await updateMeeting(meetingId, validation.data);
@@ -66,7 +81,7 @@ export async function PUT(
     return NextResponse.json(updatedMeeting, { status: 200 });
   } catch {
     return NextResponse.json(
-      { error: "Request body must be valid JSON." },
+      { error: "El cuerpo de la solicitud debe ser JSON válido." },
       { status: 400 },
     );
   }
@@ -77,20 +92,29 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   if (!(await auth())?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { error: "No has iniciado sesión." },
+      { status: 401 },
+    );
   }
 
   const { id } = await params;
   const meetingId = Number(id);
 
   if (!Number.isInteger(meetingId) || meetingId <= 0) {
-    return NextResponse.json({ error: "Invalid meeting ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: "El identificador de la reunión no es válido." },
+      { status: 400 },
+    );
   }
 
   const deleted = await deleteMeeting(meetingId);
 
   if (!deleted) {
-    return NextResponse.json({ error: "Meeting not found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "No se encontró la reunión." },
+      { status: 404 },
+    );
   }
 
   return NextResponse.json({ success: true }, { status: 200 });

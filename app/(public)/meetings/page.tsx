@@ -5,9 +5,9 @@ import { Pagination } from "@/components/Pagination";
 import { getMeetings, getMeetingsTotalPages } from "@/lib/meetings-db";
 
 export const metadata: Metadata = {
-  title: "Meeting Directory",
+  title: "Directorio de reuniones",
   description:
-    "Browse upcoming and past sacrament meetings, explore talks, hymns, and announcements, and filter by date or keyword.",
+    "Consulta reuniones sacramentales pasadas y próximas, revisa discursos, himnos y anuncios, y filtra por fecha o palabra clave.",
 };
 
 export const dynamic = "force-dynamic";
@@ -26,13 +26,13 @@ export default async function MeetingsPage(props: {
 
   return (
     <main>
-      <h1 className="text-3xl font-bold">Sacrament Meetings</h1>
-      <p className="mt-2">View all upcoming and past meetings.</p>
+      <h1 className="text-3xl font-bold">Reuniones sacramentales</h1>
+      <p className="mt-2">Consulta todas las reuniones pasadas y próximas.</p>
 
       <MeetingSearch />
 
       {meetings.length === 0 ? (
-        <p className="mt-8 text-slate-600">No meetings found.</p>
+        <p className="mt-8 text-slate-600">No se encontraron reuniones.</p>
       ) : (
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           {meetings.map((meeting) => (

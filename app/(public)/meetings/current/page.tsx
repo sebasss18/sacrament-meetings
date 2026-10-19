@@ -3,9 +3,9 @@ import MeetingDetail from "../../../../components/MeetingDetail";
 import { getMeetings } from "../../../../lib/meetings-db";
 
 export const metadata: Metadata = {
-  title: "Current Meeting",
+  title: "Reunión actual",
   description:
-    "See the next upcoming sacrament meeting details, including speakers, hymns, ward business, and announcements.",
+    "Consulta los detalles de la próxima reunión sacramental, incluidos discursantes, himnos, asuntos del barrio y anuncios.",
 };
 
 export default async function CurrentMeetingPage() {
@@ -20,15 +20,15 @@ export default async function CurrentMeetingPage() {
   if (!upcomingMeeting) {
     return (
       <main>
-        <h1 className="mb-6 text-3xl font-bold">Current Meeting</h1>
-        <p>No current meeting scheduled.</p>
+        <h1 className="mb-6 text-3xl font-bold">Reunión actual</h1>
+        <p>No hay ninguna reunión programada actualmente.</p>
       </main>
     );
   }
 
   return (
     <main>
-      <h1 className="mb-6 text-3xl font-bold">Current Meeting</h1>
+      <h1 className="mb-6 text-3xl font-bold">Reunión actual</h1>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-800">
         <MeetingDetail meeting={upcomingMeeting} />

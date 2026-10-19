@@ -32,8 +32,8 @@ export async function authenticate(
   } catch (error) {
     if (error instanceof AuthError) {
       return error.type === "CredentialsSignin"
-        ? "Invalid email or password."
-        : "Something went wrong. Please try again.";
+        ? "El correo electrónico o la contraseña no son válidos."
+        : "Ocurrió un error. Inténtalo de nuevo.";
     }
 
     throw error;
@@ -131,7 +131,7 @@ export async function createMeeting(
     });
 
     return {
-      message: "Please correct the errors in the form.",
+      message: "Corrige los errores del formulario.",
       errors,
     };
   }
@@ -140,7 +140,7 @@ export async function createMeeting(
     await createMeetingDb(validation.data);
   } catch {
     return {
-      message: "There was a problem creating the meeting. Please try again.",
+      message: "No se pudo crear la reunión. Inténtalo de nuevo.",
       errors: {},
     };
   }
@@ -220,7 +220,7 @@ export async function updateMeeting(
     });
 
     return {
-      message: "Please correct the errors in the form.",
+      message: "Corrige los errores del formulario.",
       errors,
     };
   }
@@ -229,7 +229,7 @@ export async function updateMeeting(
     await updateMeetingDb(id, validation.data);
   } catch {
     return {
-      message: "There was a problem updating the meeting. Please try again.",
+      message: "No se pudo actualizar la reunión. Inténtalo de nuevo.",
       errors: {},
     };
   }
@@ -245,7 +245,7 @@ export async function deleteMeeting(id: number): Promise<FormState> {
     await deleteMeetingDb(id);
   } catch {
     return {
-      message: "Could not delete the meeting. Please try again.",
+      message: "No se pudo eliminar la reunión. Inténtalo de nuevo.",
       errors: {},
     };
   }

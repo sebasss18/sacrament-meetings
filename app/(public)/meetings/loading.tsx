@@ -1,8 +1,8 @@
 export default function MeetingsLoading() {
   return (
     <main>
-      <h1 className="text-3xl font-bold">Sacrament Meetings</h1>
-      <p className="mt-2">View all upcoming and past meetings.</p>
+      <h1 className="text-3xl font-bold">Reuniones sacramentales</h1>
+      <p className="mt-2">Consulta todas las reuniones pasadas y próximas.</p>
 
       <div className="mt-6 flex gap-2">
         <div className="flex-1 h-10 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />

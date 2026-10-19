@@ -41,7 +41,7 @@ export default function OpenGraphImage() {
             marginBottom: 18,
           }}
         >
-          Sacrament Meeting Planner
+          Planificador de reuniones sacramentales
         </div>
         <div
           style={{
@@ -51,7 +51,7 @@ export default function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          Plan, review, and share meeting details.
+          Planifica, consulta y comparte los detalles de tus reuniones.
         </div>
         <div
           style={{
@@ -60,7 +60,7 @@ export default function OpenGraphImage() {
             opacity: 0.9,
           }}
         >
-          Speakers • hymns • announcements • ward business
+          Discursantes • himnos • anuncios • asuntos del barrio
         </div>
       </div>
     </div>,

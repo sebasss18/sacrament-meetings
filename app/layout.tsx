@@ -7,33 +7,33 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   metadataBase: new URL("http://localhost:3000"),
   title: {
-    default: "Sacrament Meetings",
-    template: "%s | Sacrament Meetings",
+    default: "Reuniones sacramentales",
+    template: "%s | Reuniones sacramentales",
   },
   description:
-    "Plan and explore Sacrament Meetings with detailed speaker, hymn, and announcement information.",
+    "Planifica y consulta reuniones sacramentales con información detallada sobre discursantes, himnos y anuncios.",
   openGraph: {
-    title: "Sacrament Meetings",
+    title: "Reuniones sacramentales",
     description:
-      "Plan and explore Sacrament Meetings with detailed speaker, hymn, and announcement information.",
-    siteName: "Sacrament Meetings",
+      "Planifica y consulta reuniones sacramentales con información detallada sobre discursantes, himnos y anuncios.",
+    siteName: "Reuniones sacramentales",
     url: "/",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "Sacrament Meetings planner cover",
+        alt: "Portada del planificador de reuniones sacramentales",
       },
     ],
-    locale: "en_US",
+    locale: "es_MX",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sacrament Meetings",
+    title: "Reuniones sacramentales",
     description:
-      "Plan and explore Sacrament Meetings with detailed speaker, hymn, and announcement information.",
+      "Planifica y consulta reuniones sacramentales con información detallada sobre discursantes, himnos y anuncios.",
     images: ["/opengraph-image"],
   },
 };
@@ -54,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body className={`${inter.variable} ${libreBaskerville.variable}`}>
         <Header />
         <main className="mx-auto min-h-screen max-w-6xl p-6">{children}</main>

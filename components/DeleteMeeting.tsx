@@ -24,7 +24,7 @@ export default function DeleteMeeting({ id }: DeleteMeetingProps) {
     <form
       action={formAction}
       onSubmit={(event) => {
-        if (!confirm("Are you sure you want to delete this meeting?")) {
+        if (!confirm("¿Seguro que deseas eliminar esta reunión?")) {
           event.preventDefault();
         }
       }}
@@ -37,7 +37,7 @@ export default function DeleteMeeting({ id }: DeleteMeetingProps) {
         disabled={isPending}
         className="rounded-full border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition duration-300 hover:scale-104 hover:bg-red-50 disabled:opacity-60 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-950"
       >
-        {isPending ? "Deleting..." : "Delete"}
+        {isPending ? "Eliminando…" : "Eliminar"}
       </button>
     </form>
   );

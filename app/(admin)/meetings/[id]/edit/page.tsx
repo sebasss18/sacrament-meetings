@@ -12,18 +12,20 @@ export async function generateMetadata({
 
   if (!/^\d+$/.test(id)) {
     return {
-      title: "Edit Meeting",
-      description: "Edit an existing sacrament meeting plan.",
+      title: "Editar reunión",
+      description: "Edita un plan existente de reunión sacramental.",
     };
   }
 
   const meeting = await getMeetingById(Number(id));
 
   return {
-    title: meeting ? `Edit ${meeting.date}` : "Edit Meeting",
+    title: meeting
+      ? `Editar reunión del ${new Date(`${meeting.date}T00:00:00`).toLocaleDateString("es-MX", { dateStyle: "long" })}`
+      : "Editar reunión",
     description: meeting
-      ? `Update the sacrament meeting plan for ${meeting.date}.`
-      : "Edit an existing sacrament meeting plan.",
+      ? `Actualiza el plan de la reunión sacramental del ${new Date(`${meeting.date}T00:00:00`).toLocaleDateString("es-MX", { dateStyle: "long" })}.`
+      : "Edita un plan existente de reunión sacramental.",
   };
 }
 

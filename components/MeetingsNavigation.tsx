@@ -15,6 +15,10 @@ export default function MeetingsNavigation({
   const isCurrentMeeting = pathname === "/meetings/current";
   const isCreateMeeting = pathname === "/meetings/new";
 
+  if (!pathname.startsWith("/meetings")) {
+    return null;
+  }
+
   return (
     <nav className="mb-6 flex gap-6 border-b pb-4">
       <Link
@@ -22,14 +26,14 @@ export default function MeetingsNavigation({
         aria-current={isAllMeetings ? "page" : undefined}
         className={`transition-all duration-300 ${isAllMeetings ? "font-bold" : ""}`}
       >
-        All Meetings
+        Todas las reuniones
       </Link>
       <Link
         href="/meetings/current"
         aria-current={isCurrentMeeting ? "page" : undefined}
         className={`transition-all duration-300 ${isCurrentMeeting ? "font-bold" : ""}`}
       >
-        Current Meeting
+        Reunión actual
       </Link>
       {isAuthenticated && (
         <Link
@@ -37,7 +41,7 @@ export default function MeetingsNavigation({
           aria-current={isCreateMeeting ? "page" : undefined}
           className={`transition-all duration-300 ${isCreateMeeting ? "font-bold" : ""}`}
         >
-          Create Meeting
+          Crear reunión
         </Link>
       )}
     </nav>

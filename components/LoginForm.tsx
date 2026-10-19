@@ -16,7 +16,7 @@ export default function LoginForm() {
           htmlFor="email"
           className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
         >
-          Email
+          Correo electrónico
         </label>
         <input
           id="email"
@@ -32,7 +32,7 @@ export default function LoginForm() {
           htmlFor="password"
           className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
         >
-          Password
+          Contraseña
         </label>
         <input
           id="password"
@@ -49,7 +49,7 @@ export default function LoginForm() {
         disabled={isPending}
         className="w-full rounded-lg bg-slate-800 px-5 py-3 font-semibold text-white transition hover:bg-slate-700 disabled:cursor-wait disabled:opacity-60 dark:bg-white dark:text-slate-900"
       >
-        {isPending ? "Signing in…" : "Sign In"}
+        {isPending ? "Iniciando sesión…" : "Iniciar sesión"}
       </button>
       {errorMessage && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-300">

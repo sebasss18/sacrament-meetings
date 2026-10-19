@@ -18,7 +18,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   if (!(await auth())?.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { error: "No has iniciado sesión." },
+      { status: 401 },
+    );
   }
 
   try {
@@ -28,7 +31,7 @@ export async function POST(request: Request) {
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: "Invalid meeting payload",
+          error: "Los datos de la reunión no son válidos.",
           issues: validation.error.issues,
         },
         { status: 400 },
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
     return NextResponse.json(meeting, { status: 201 });
   } catch {
     return NextResponse.json(
-      { error: "Request body must be valid JSON." },
+      { error: "El cuerpo de la solicitud debe ser JSON válido." },
       { status: 400 },
     );
   }

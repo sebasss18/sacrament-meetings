@@ -23,10 +23,10 @@ export function MeetingSearch() {
     <div className="mb-8">
       <input
         type="search"
-        placeholder="Search by speaker, leader, or meeting type..."
+        placeholder="Busca por discursante, líder o tipo de reunión..."
         defaultValue={searchParams.get("query")?.toString()}
         onChange={(e) => handleSearch(e.target.value)}
-        aria-label="Search meetings"
+        aria-label="Buscar reuniones"
         className="w-full px-3 py-1.5 md:px-6 md:py-2 text-sm md:text-base border-2 md:border-3 border-slate-700 rounded-full bg-white transition-all duration-300 ease-out focus:outline-none focus:shadow-lg focus:shadow-slate-800/20 hover:border-slate-700 placeholder:text-slate-400 mt-4"
       />
     </div>

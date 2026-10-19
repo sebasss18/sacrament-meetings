@@ -19,32 +19,32 @@ export function Pagination({ totalPages }: { totalPages: number }) {
   }
 
   return (
-    <nav aria-label="Pagination" className="flex gap-4 justify-center mt-8">
+    <nav aria-label="Paginación" className="flex gap-4 justify-center mt-8">
       {currentPage > 1 ? (
         <Link
           href={createPageURL(currentPage - 1)}
           className="px-6 py-2 bg-slate-800 text-white rounded-full hover:bg-slate-700 hover:scale-105 transition-all duration-300"
         >
-          Previous
+          Anterior
         </Link>
       ) : (
         <span className="px-6 py-2 bg-gray-400 text-gray-600 rounded-full cursor-not-allowed">
-          Previous
+          Anterior
         </span>
       )}
       <span className="px-2 py-2 text-slate-800">
-        {currentPage} of {totalPages}
+        Página {currentPage} de {totalPages}
       </span>
       {currentPage < totalPages ? (
         <Link
           href={createPageURL(currentPage + 1)}
           className="px-6 py-2 bg-slate-800 text-white rounded-full hover:bg-slate-700 hover:scale-105 transition-all duration-300"
         >
-          Next
+          Siguiente
         </Link>
       ) : (
         <span className="px-6 py-2 bg-gray-400 text-gray-600 rounded-full cursor-not-allowed">
-          Next
+          Siguiente
         </span>
       )}
     </nav>

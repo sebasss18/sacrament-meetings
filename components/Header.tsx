@@ -2,6 +2,7 @@ import NavLinks from "./NavLinks";
 import Link from "next/link";
 import { auth } from "@/auth";
 import SignOutButton from "./SignOutButton";
+import HeaderScroll from "./HeaderScroll";
 
 async function AuthControls() {
   const session = await auth();
@@ -11,27 +12,40 @@ async function AuthControls() {
   ) : (
     <Link
       href="/login"
-      className="rounded-full border border-white/30 px-4 py-2 text-sm font-semibold transition hover:bg-white/10"
+      className="group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/30 active:scale-100"
     >
-      Sign In
+      Iniciar sesión
+      <span className="transition-transform duration-300 group-hover:translate-x-1">
+        →
+      </span>
     </Link>
   );
 }
 
 export default function Header() {
-  const date = new Date().toLocaleDateString();
+  const date = new Date().toLocaleDateString("es-MX", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 
   return (
-    <header className="m-2 flex flex-col gap-5 rounded-xl bg-slate-800 p-5 text-white font-serif sm:flex-row sm:items-center sm:justify-between sm:p-6">
-      <div>
-        <h1 className="text-2xl font-bold">Rio Sonora</h1>
-        <p>{date}</p>
-      </div>
+    <HeaderScroll>
+      <Link href="/" className="leading-tight">
+        <h1 className="text-2xl font-bold tracking-tight">Rio Sonora</h1>
+        <p className="flex items-center gap-2 text-sm capitalize text-white/60">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sky-300" />
+          </span>
+          {date}
+        </p>
+      </Link>
 
-      <div className="flex items-center justify-between gap-5 sm:justify-end">
+      <div className="flex items-center justify-between gap-4 sm:justify-end">
         <NavLinks />
         <AuthControls />
       </div>
-    </header>
+    </HeaderScroll>
   );
 }
