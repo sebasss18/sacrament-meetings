@@ -13,6 +13,11 @@ npm run dev
 
 Open <http://localhost:3000>.
 
+Set `SITE_URL` to the canonical public URL in the deployment environment (for
+example, `https://example.com`) so social previews can fetch the Open Graph
+image. On Vercel, the deployment URL is used automatically when `SITE_URL` is
+not set; locally, it defaults to `http://localhost:3000`.
+
 ## Configure owner authentication
 
 Authentication uses Auth.js v5 credentials. Keep the existing database settings in `.env.local`; add the following values to that file (or your deployment environment):

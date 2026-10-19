@@ -5,8 +5,17 @@ import PageContainer from "../components/PageContainer";
 import { Inter, Libre_Baskerville } from "next/font/google";
 import type { Metadata } from "next";
 
+const siteUrl =
+  process.env.SITE_URL ||
+  (process.env.VERCEL_ENV === "production" &&
+  process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Reuniones sacramentales",
     template: "%s | Reuniones sacramentales",
@@ -22,8 +31,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        width: 1280,
+        height: 1029,
         alt: "Portada del planificador de reuniones sacramentales",
       },
     ],
