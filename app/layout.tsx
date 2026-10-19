@@ -1,6 +1,7 @@
 import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import PageContainer from "../components/PageContainer";
 import { Inter, Libre_Baskerville } from "next/font/google";
 import type { Metadata } from "next";
 
@@ -55,9 +56,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.variable} ${libreBaskerville.variable}`}>
+      <body
+        className={`${inter.variable} ${libreBaskerville.variable} flex min-h-screen flex-col`}
+      >
         <Header />
-        <main className="mx-auto min-h-screen max-w-6xl p-6">{children}</main>
+
+        <PageContainer>{children}</PageContainer>
+
         <Footer />
       </body>
     </html>

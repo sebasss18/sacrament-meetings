@@ -27,10 +27,10 @@ export default function HeaderScroll({ children }: { children: ReactNode }) {
 
   return (
     <header
-      className={`sticky top-2 z-50 mx-2 mt-2 mb-2 flex flex-col gap-5 rounded-xl border border-white/15 text-white shadow-[0_4px_12px_rgba(0,0,0,0.18)] transition-all duration-500 ease-in-out hover:shadow-[0_8px_20px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:justify-between ${
+      className={`sticky top-0 z-50 mx-0 mt-0 mb-0 flex flex-col gap-5 rounded-none border border-white/1 text-white shadow-[0_4px_12px_rgba(0,0,0,0.18)] transition-all duration-500 ease-in-out hover:shadow-[0_8px_20px_rgba(0,0,0,0.22)] sm:flex-row sm:items-center sm:justify-between ${
         compact
-          ? "relative gap-4 overflow-hidden border-white/20 bg-slate-800/80 p-4 backdrop-blur-[2px] sm:p-4 before:pointer-events-none before:absolute before:inset-0 before:rounded-xl before:border before:border-white/10 before:content-['']"
-          : "bg-slate-800 p-5 sm:p-6"
+          ? "relative gap-4 overflow-hidden border-white/1 bg-slate-950/70 p-4 backdrop-blur-[2px] sm:p-4 before:pointer-events-none before:absolute before:inset-0 before:rounded-none before:border before:border-white/10 before:content-['']"
+          : "bg-slate-950 p-5 sm:p-6"
       }`}
     >
       {children}
