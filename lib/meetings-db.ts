@@ -17,7 +17,7 @@ function getSql() {
   return sql;
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 6;
 
 export async function getMeetings(
   query: string = "",
