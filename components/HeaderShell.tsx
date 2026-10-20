@@ -29,7 +29,6 @@ export default function HeaderShell({
   }, []);
 
   useEffect(() => {
-    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(id);
   }, []);
