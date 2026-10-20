@@ -13,7 +13,7 @@ async function AuthControls() {
   ) : (
     <Link
       href="/login"
-      className="group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition-[transform,box-shadow] duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/30 active:scale-100"
+      className="group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition-[transform,scale,box-shadow] duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/30 active:scale-100"
     >
       Iniciar sesión
       <span className="transition-transform duration-300 group-hover:translate-x-1">

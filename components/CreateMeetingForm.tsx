@@ -111,8 +111,8 @@ export default function CreateMeetingForm() {
       )}
 
       <Section title="Información de la reunión" first>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="min-w-0">
             <label htmlFor="date" className={labelClass}>
               Fecha
             </label>
@@ -122,7 +122,7 @@ export default function CreateMeetingForm() {
               type="date"
               required
               aria-describedby="date-error"
-              className={inputClass}
+              className={`${inputClass} block min-h-[2.75rem] min-w-0 max-w-full appearance-none text-left [&::-webkit-date-and-time-value]:min-h-[1.5em] [&::-webkit-date-and-time-value]:text-left`}
             />
             <FieldError id="date-error" errors={state.errors?.date} />
           </div>

@@ -10,13 +10,6 @@ export default function Footer() {
 
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-white/10 bg-slate-950 text-white">
-      {/* Línea de luz en el borde superior */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-300/40 to-transparent"
-      />
-
-      {/* Cuadrícula tenue, igual que el panel del login */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]"
