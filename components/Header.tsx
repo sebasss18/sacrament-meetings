@@ -41,7 +41,7 @@ export default function Header() {
 
           <span
             aria-hidden="true"
-            className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap text-[11px] capitalize text-white/60 [max-width:calc(11rem*var(--p))] [opacity:var(--p)] [transform:translateX(calc(16px*(1_-_var(--p))))] sm:hidden"
+            className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap text-[11px] capitalize text-white/60 [max-width:calc(11rem*var(--d))] [opacity:var(--d)] [transform:translateX(calc(16px*(1_-_var(--d))))] sm:hidden"
           >
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sky-300" />
             {date}
@@ -59,7 +59,7 @@ export default function Header() {
         </div>
       </Link>
 
-      <div className="flex flex-row items-center justify-between gap-2 sm:justify-end sm:gap-4 max-sm:[&>a]:[font-size:calc(14px_-_2px*var(--p))] max-sm:[&>a]:[line-height:calc(20px_-_4px*var(--p))] max-sm:[&>a]:[padding:calc(8px_-_4px*var(--p))_calc(16px_-_6px*var(--p))] max-sm:[&_button]:[font-size:calc(14px_-_2px*var(--p))] max-sm:[&_button]:[line-height:calc(20px_-_4px*var(--p))] max-sm:[&_button]:[padding:calc(8px_-_4px*var(--p))_calc(16px_-_4px*var(--p))] max-sm:[&_nav_a]:[font-size:calc(14px_-_2px*var(--p))] max-sm:[&_nav_a]:[line-height:calc(20px_-_4px*var(--p))] max-sm:[&_nav_a]:[padding:calc(6px_-_2px*var(--p))_calc(12px_-_2px*var(--p))]">
+      <div className="flex flex-row items-center justify-between gap-2 sm:justify-end sm:gap-4 max-sm:[&>a]:[font-size:calc(14px_-_2px*var(--p))] max-sm:[&>a]:[line-height:calc(20px_-_4px*var(--p))] max-sm:[&>a]:[padding:calc(8px_-_4px*var(--p))_calc(16px_-_6px*var(--p))] max-sm:[&_button]:[font-size:calc(14px_-_2px*var(--p))] max-sm:[&_button]:[line-height:calc(20px_-_4px*var(--p))] max-sm:[&_button]:[padding:calc(8px_-_4px*var(--p))_calc(16px_-_4px*var(--p))]">
         <NavLinks />
         <AuthControls />
       </div>
