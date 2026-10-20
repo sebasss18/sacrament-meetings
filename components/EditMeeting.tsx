@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import Link from "next/link";
+import { useActionState, useRef, useState } from "react";
 import { updateMeeting, type FormState } from "@/lib/actions";
 import type { SacramentMeeting } from "@/lib/types";
 
@@ -13,45 +14,123 @@ const initialState: FormState = {
   errors: {},
 };
 
+const labelClass = "mb-2 block text-sm font-medium text-slate-700";
+
+const inputClass =
+  "w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none transition-all duration-300 placeholder:text-slate-400 hover:border-slate-400 focus:border-slate-800 focus:bg-white focus:ring-2 focus:ring-sky-300/60";
+
+const cardInputClass = inputClass.replace("bg-slate-50", "bg-white");
+
+const dateInputClass = `${inputClass} block min-h-[2.75rem] min-w-0 max-w-full appearance-none text-left [&::-webkit-date-and-time-value]:min-h-[1.5em] [&::-webkit-date-and-time-value]:text-left`;
+
+function FieldError({ id, errors }: { id: string; errors?: string[] }) {
+  return (
+    <div id={id} aria-live="polite">
+      {errors?.map((error) => (
+        <p key={error} className="mt-1.5 text-sm text-red-600">
+          {error}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function Section({
+  title,
+  first,
+  children,
+}: {
+  title: string;
+  first?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className={`mb-8 ${first ? "" : "border-t border-slate-200 pt-8"}`}
+    >
+      <h2 className="mb-5 flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-800">
+        <span className="h-5 w-1 rounded-full bg-sky-400" />
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+type Speaker = {
+  id: number;
+  name: string;
+  topic: string;
+  type: SacramentMeeting["speakers"][number]["type"];
+};
+
 export default function EditMeeting({ meeting }: EditMeetingProps) {
-  const [speakers, setSpeakers] = useState(meeting.speakers);
+  const nextId = useRef(meeting.speakers.length);
+  const [speakers, setSpeakers] = useState<Speaker[]>(() =>
+    meeting.speakers.map((speaker, index) => ({
+      id: index,
+      name: speaker.name,
+      topic: speaker.topic,
+      type: speaker.type,
+    })),
+  );
 
   const [state, formAction, isPending] = useActionState(
     updateMeeting.bind(null, meeting.id),
     initialState,
   );
 
+  const updateSpeaker = <K extends keyof Speaker>(
+    id: number,
+    field: K,
+    value: Speaker[K],
+  ) =>
+    setSpeakers((current) =>
+      current.map((speaker) =>
+        speaker.id === id ? { ...speaker, [field]: value } : speaker,
+      ),
+    );
+
+  const addSpeaker = () =>
+    setSpeakers((current) => [
+      ...current,
+      { id: nextId.current++, name: "", topic: "", type: "speaker" },
+    ]);
+
+  const removeSpeaker = (id: number) =>
+    setSpeakers((current) => current.filter((speaker) => speaker.id !== id));
+
   return (
     <form
       action={formAction}
-      className="mx-auto max-w-4xl rounded-xl bg-white p-8 shadow-xl ring-1 ring-slate-200"
+      className="mx-auto max-w-4xl rounded-xl bg-white p-6 shadow-xl ring-1 ring-slate-200 sm:p-8"
     >
-      {state.message && (
-        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {state.message}
-        </p>
-      )}
-      <div className="mb-8 border-b border-slate-200 pb-6">
-        <h1 className="text-3xl font-bold text-slate-800">
+      <div className="mb-8 rounded-xl p-3 text-slate-800">
+        <h1 className="text-3xl font-bold tracking-tight">
           Editar reunión sacramental
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 flex items-center gap-2 text-sm text-slate-800">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-75" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sky-300" />
+          </span>
           Actualiza los detalles de la reunión sacramental.
         </p>
       </div>
 
-      {/* Meeting Information */}
-      <section className="mb-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">
-          Información de la reunión
-        </h2>
+      {state.message && (
+        <p
+          role="alert"
+          className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          {state.message}
+        </p>
+      )}
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="date"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+      <Section title="Información de la reunión" first>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="min-w-0">
+            <label htmlFor="date" className={labelClass}>
               Fecha
             </label>
             <input
@@ -61,20 +140,13 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               required
               defaultValue={meeting.date}
               aria-describedby="date-error"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={dateInputClass}
             />
-            <div id="date-error" aria-live="polite">
-              {state.errors?.date?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError id="date-error" errors={state.errors?.date} />
           </div>
 
           <div>
-            <label
-              htmlFor="meetingType"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="meetingType" className={labelClass}>
               Tipo de reunión
             </label>
             <select
@@ -83,7 +155,7 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               required
               defaultValue={meeting.meetingType}
               aria-describedby="meetingType-error"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             >
               <option value="">Selecciona un tipo</option>
               <option value="testimony">De testimonios</option>
@@ -91,18 +163,14 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               <option value="stake">De estaca</option>
               <option value="general">General</option>
             </select>
-            <div id="meetingType-error" aria-live="polite">
-              {state.errors?.meetingType?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="meetingType-error"
+              errors={state.errors?.meetingType}
+            />
           </div>
 
           <div>
-            <label
-              htmlFor="presiding"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="presiding" className={labelClass}>
               Preside
             </label>
             <input
@@ -113,20 +181,13 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.presiding}
               aria-describedby="presiding-error"
               placeholder="Nombre de quien preside"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="presiding-error" aria-live="polite">
-              {state.errors?.presiding?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError id="presiding-error" errors={state.errors?.presiding} />
           </div>
 
           <div>
-            <label
-              htmlFor="conducting"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="conducting" className={labelClass}>
               Dirige
             </label>
             <input
@@ -137,21 +198,17 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.conducting}
               aria-describedby="conducting-error"
               placeholder="Nombre de quien dirige"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="conducting-error" aria-live="polite">
-              {state.errors?.conducting?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="conducting-error"
+              errors={state.errors?.conducting}
+            />
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Announcements */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">Anuncios</h2>
-
+      <Section title="Anuncios">
         <label htmlFor="announcements" className="sr-only">
           Anuncios
         </label>
@@ -162,28 +219,20 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
           rows={3}
           defaultValue={(meeting.announcements ?? []).join("\n")}
           placeholder="Escribe los anuncios..."
-          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+          className={`${inputClass} resize-y`}
         />
-        <div id="announcements-error" aria-live="polite">
-          {state.errors?.announcements?.map((error) => (
-            <p key={error}>{error}</p>
-          ))}
-        </div>
-      </section>
+        <FieldError
+          id="announcements-error"
+          errors={state.errors?.announcements}
+        />
+      </Section>
 
-      {/* Opening */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">Inicio</h2>
-
+      <Section title="Inicio">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="openingHymnNumber"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="openingHymnNumber" className={labelClass}>
               Número del himno
             </label>
-
             <input
               id="openingHymnNumber"
               name="openingHymnNumber"
@@ -193,23 +242,18 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.openingHymn.number}
               aria-describedby="openingHymnNumber-error"
               placeholder="p. ej., 85"
-              className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="openingHymnNumber-error" aria-live="polite">
-              {state.errors?.["openingHymn.number"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="openingHymnNumber-error"
+              errors={state.errors?.["openingHymn.number"]}
+            />
           </div>
 
           <div>
-            <label
-              htmlFor="openingHymnTitle"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="openingHymnTitle" className={labelClass}>
               Título del himno
             </label>
-
             <input
               id="openingHymnTitle"
               name="openingHymnTitle"
@@ -218,20 +262,16 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.openingHymn.title}
               aria-describedby="openingHymnTitle-error"
               placeholder="Escribe el título del himno"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="openingHymnTitle-error" aria-live="polite">
-              {state.errors?.["openingHymn.title"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="openingHymnTitle-error"
+              errors={state.errors?.["openingHymn.title"]}
+            />
           </div>
 
-          <div>
-            <label
-              htmlFor="openingPrayer"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+          <div className="sm:col-span-2">
+            <label htmlFor="openingPrayer" className={labelClass}>
               Oración inicial
             </label>
             <input
@@ -242,23 +282,17 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.openingPrayer}
               aria-describedby="openingPrayer-error"
               placeholder="Nombre de quien ofrecerá la oración"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="openingPrayer-error" aria-live="polite">
-              {state.errors?.openingPrayer?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="openingPrayer-error"
+              errors={state.errors?.openingPrayer}
+            />
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Ward Business */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">
-          Asuntos del barrio
-        </h2>
-
+      <Section title="Asuntos del barrio">
         <label htmlFor="wardBusiness" className="sr-only">
           Asuntos del barrio
         </label>
@@ -271,17 +305,16 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
             .map((business) => business.description)
             .join("\n")}
           placeholder="Escribe los asuntos del barrio..."
-          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+          className={`${inputClass} resize-y`}
         />
-        <div id="wardBusiness-error" aria-live="polite">
-          {state.errors?.wardBusiness?.map((error) => (
-            <p key={error}>{error}</p>
-          ))}
-        </div>
+        <FieldError
+          id="wardBusiness-error"
+          errors={state.errors?.wardBusiness}
+        />
 
         <label
           htmlFor="stakeBusiness"
-          className="mt-4 flex items-center gap-3 text-sm font-medium text-slate-700"
+          className="mt-4 flex w-fit cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition-all duration-300 hover:scale-105 hover:bg-slate-100"
         >
           <input
             id="stakeBusiness"
@@ -290,30 +323,22 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
             value="true"
             defaultChecked={meeting.stakeBusiness}
             aria-describedby="stakeBusiness-error"
-            className="h-4 w-4 rounded border-slate-300 text-slate-800 focus:ring-slate-300"
+            className="h-4 w-4 rounded border-slate-300 accent-slate-800"
           />
           Asuntos de la estaca
         </label>
-        <div id="stakeBusiness-error" aria-live="polite">
-          {state.errors?.stakeBusiness?.map((error) => (
-            <p key={error}>{error}</p>
-          ))}
-        </div>
-      </section>
+        <FieldError
+          id="stakeBusiness-error"
+          errors={state.errors?.stakeBusiness}
+        />
+      </Section>
 
-      {/* Sacrament */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">Sacrament</h2>
-
+      <Section title="Sacramento">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="sacramentHymnNumber"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="sacramentHymnNumber" className={labelClass}>
               Número del himno
             </label>
-
             <input
               id="sacramentHymnNumber"
               name="sacramentHymnNumber"
@@ -323,23 +348,18 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.sacramentHymn.number}
               aria-describedby="sacramentHymnNumber-error"
               placeholder="p. ej., 85"
-              className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="sacramentHymnNumber-error" aria-live="polite">
-              {state.errors?.["sacramentHymn.number"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="sacramentHymnNumber-error"
+              errors={state.errors?.["sacramentHymn.number"]}
+            />
           </div>
 
           <div>
-            <label
-              htmlFor="sacramentHymnTitle"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="sacramentHymnTitle" className={labelClass}>
               Título del himno
             </label>
-
             <input
               id="sacramentHymnTitle"
               name="sacramentHymnTitle"
@@ -348,45 +368,33 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.sacramentHymn.title}
               aria-describedby="sacramentHymnTitle-error"
               placeholder="Escribe el título del himno"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="sacramentHymnTitle-error" aria-live="polite">
-              {state.errors?.["sacramentHymn.title"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="sacramentHymnTitle-error"
+              errors={state.errors?.["sacramentHymn.title"]}
+            />
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Speakers */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">
-          Discursantes
-        </h2>
-
+      <Section title="Discursantes">
         <div className="space-y-5">
           {speakers.map((speaker, index) => (
             <div
-              key={index}
-              className="rounded-lg border border-slate-200 bg-slate-50 p-5"
+              key={speaker.id}
+              className="rounded-xl border border-slate-200 bg-slate-50 p-5 transition-shadow duration-300 hover:shadow-md"
             >
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-semibold text-slate-700">
+                <h3 className="flex items-center gap-2 font-semibold text-slate-700">
                   Discursante {index + 1}
                 </h3>
 
                 {index > 0 && (
                   <button
                     type="button"
-                    onClick={() =>
-                      setSpeakers(
-                        speakers.filter(
-                          (_, speakerIndex) => speakerIndex !== index,
-                        ),
-                      )
-                    }
-                    className="text-sm font-medium text-slate-600 hover:text-slate-900"
+                    onClick={() => removeSpeaker(speaker.id)}
+                    className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition-all duration-300 hover:scale-105 hover:bg-red-50 hover:text-red-600 active:scale-100"
                   >
                     Quitar
                   </button>
@@ -396,96 +404,85 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label
-                    htmlFor={`speakerName-${index}`}
-                    className="mb-2 block text-sm font-medium text-slate-700"
+                    htmlFor={`speakerName-${speaker.id}`}
+                    className={labelClass}
                   >
                     Nombre
                   </label>
-
                   <input
-                    id={`speakerName-${index}`}
+                    id={`speakerName-${speaker.id}`}
                     name="speakerName"
                     type="text"
                     required
-                    aria-describedby={`speakerName-${index}-error`}
+                    aria-describedby={`speakerName-${speaker.id}-error`}
                     value={speaker.name}
-                    onChange={(event) => {
-                      const updatedSpeakers = [...speakers];
-                      updatedSpeakers[index].name = event.target.value;
-                      setSpeakers(updatedSpeakers);
-                    }}
+                    onChange={(event) =>
+                      updateSpeaker(speaker.id, "name", event.target.value)
+                    }
                     placeholder="Nombre del discursante"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                    className={cardInputClass}
                   />
-                  <div id={`speakerName-${index}-error`} aria-live="polite">
-                    {state.errors?.[`speakers.${index}.name`]?.map((error) => (
-                      <p key={error}>{error}</p>
-                    ))}
-                  </div>
+                  <FieldError
+                    id={`speakerName-${speaker.id}-error`}
+                    errors={state.errors?.[`speakers.${index}.name`]}
+                  />
                 </div>
 
                 <div>
                   <label
-                    htmlFor={`speakerType-${index}`}
-                    className="mb-2 block py-1 text-sm font-medium text-slate-700"
+                    htmlFor={`speakerType-${speaker.id}`}
+                    className={labelClass}
                   >
                     Tipo
                   </label>
-
                   <select
-                    id={`speakerType-${index}`}
+                    id={`speakerType-${speaker.id}`}
                     name="speakerType"
-                    aria-describedby={`speakerType-${index}-error`}
+                    aria-describedby={`speakerType-${speaker.id}-error`}
                     value={speaker.type}
-                    onChange={(event) => {
-                      const updatedSpeakers = [...speakers];
-                      const newType = event.target.value as
-                        | "speaker"
-                        | "musical-number";
-                      updatedSpeakers[index].type = newType;
-                      setSpeakers(updatedSpeakers);
-                    }}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                    onChange={(event) =>
+                      updateSpeaker(
+                        speaker.id,
+                        "type",
+                        event.target.value as Speaker["type"],
+                      )
+                    }
+                    className={cardInputClass}
                   >
                     <option value="speaker">Discursante</option>
                     <option value="musical-number">Número musical</option>
                   </select>
-                  <div id={`speakerType-${index}-error`} aria-live="polite">
-                    {state.errors?.[`speakers.${index}.type`]?.map((error) => (
-                      <p key={error}>{error}</p>
-                    ))}
-                  </div>
+                  <FieldError
+                    id={`speakerType-${speaker.id}-error`}
+                    errors={state.errors?.[`speakers.${index}.type`]}
+                  />
                 </div>
               </div>
 
               <div className="mt-5">
                 <label
-                  htmlFor={`speakerTopic-${index}`}
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  htmlFor={`speakerTopic-${speaker.id}`}
+                  className={labelClass}
                 >
                   Tema
                 </label>
-
                 <input
-                  id={`speakerTopic-${index}`}
+                  id={`speakerTopic-${speaker.id}`}
                   name="speakerTopic"
                   type="text"
                   required
-                  aria-describedby={`speakerTopic-${index}-error`}
+                  aria-describedby={`speakerTopic-${speaker.id}-error`}
                   value={speaker.topic}
-                  onChange={(event) => {
-                    const updatedSpeakers = [...speakers];
-                    updatedSpeakers[index].topic = event.target.value;
-                    setSpeakers(updatedSpeakers);
-                  }}
+                  onChange={(event) =>
+                    updateSpeaker(speaker.id, "topic", event.target.value)
+                  }
                   placeholder="Tema del discursante"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                  className={cardInputClass}
                 />
-                <div id={`speakerTopic-${index}-error`} aria-live="polite">
-                  {state.errors?.[`speakers.${index}.topic`]?.map((error) => (
-                    <p key={error}>{error}</p>
-                  ))}
-                </div>
+                <FieldError
+                  id={`speakerTopic-${speaker.id}-error`}
+                  errors={state.errors?.[`speakers.${index}.topic`]}
+                />
               </div>
             </div>
           ))}
@@ -493,35 +490,22 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
 
         <button
           type="button"
-          onClick={() =>
-            setSpeakers([
-              ...speakers,
-              {
-                name: "",
-                topic: "",
-                type: "speaker",
-              },
-            ])
-          }
-          className="mt-5 rounded-full border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+          onClick={addSpeaker}
+          className="group mt-5 inline-flex items-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-300 hover:scale-105 hover:border-slate-400 hover:bg-slate-100 hover:shadow-md active:scale-100"
         >
+          <span className="text-lg leading-none transition-transform duration-300 group-hover:rotate-90">
+            +
+          </span>
           Agregar discursante
         </button>
-      </section>
+      </Section>
 
-      {/* Closing */}
-      <section className="mb-8 border-t border-slate-200 pt-8">
-        <h2 className="mb-4 text-xl font-semibold text-slate-800">Cierre</h2>
-
+      <Section title="Cierre">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="closingHymnNumber"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="closingHymnNumber" className={labelClass}>
               Número del himno
             </label>
-
             <input
               id="closingHymnNumber"
               name="closingHymnNumber"
@@ -531,23 +515,18 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.closingHymn.number}
               aria-describedby="closingHymnNumber-error"
               placeholder="p. ej., 85"
-              className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="closingHymnNumber-error" aria-live="polite">
-              {state.errors?.["closingHymn.number"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="closingHymnNumber-error"
+              errors={state.errors?.["closingHymn.number"]}
+            />
           </div>
 
           <div>
-            <label
-              htmlFor="closingHymnTitle"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="closingHymnTitle" className={labelClass}>
               Título del himno
             </label>
-
             <input
               id="closingHymnTitle"
               name="closingHymnTitle"
@@ -556,20 +535,16 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.closingHymn.title}
               aria-describedby="closingHymnTitle-error"
               placeholder="Escribe el título del himno"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="closingHymnTitle-error" aria-live="polite">
-              {state.errors?.["closingHymn.title"]?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="closingHymnTitle-error"
+              errors={state.errors?.["closingHymn.title"]}
+            />
           </div>
 
-          <div>
-            <label
-              htmlFor="closingPrayer"
-              className="mb-2 block text-sm font-medium text-slate-700"
-            >
+          <div className="sm:col-span-2">
+            <label htmlFor="closingPrayer" className={labelClass}>
               Oración final
             </label>
             <input
@@ -580,24 +555,35 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
               defaultValue={meeting.closingPrayer}
               aria-describedby="closingPrayer-error"
               placeholder="Nombre de quien ofrecerá la oración"
-              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+              className={inputClass}
             />
-            <div id="closingPrayer-error" aria-live="polite">
-              {state.errors?.closingPrayer?.map((error) => (
-                <p key={error}>{error}</p>
-              ))}
-            </div>
+            <FieldError
+              id="closingPrayer-error"
+              errors={state.errors?.closingPrayer}
+            />
           </div>
         </div>
-      </section>
+      </Section>
 
-      <div className="flex justify-end border-t border-slate-200 pt-6">
+      <div className="flex flex-col-reverse items-stretch justify-end gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center">
+        <Link
+          href="/meetings"
+          className="rounded-lg border border-slate-300 px-6 py-3 text-center font-semibold text-slate-700 transition-all duration-300 hover:border-slate-400 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-300 focus:ring-offset-2"
+        >
+          Cancelar
+        </Link>
+
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-full bg-slate-800 px-6 py-3 font-semibold text-white shadow-md transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-500"
+          className="group inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 py-3 font-semibold text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-slate-700 hover:shadow-lg hover:shadow-black/30 focus:outline-none focus:ring-2 focus:ring-sky-300 focus:ring-offset-2 active:scale-100 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:hover:scale-100 disabled:hover:shadow-md"
         >
           {isPending ? "Actualizando…" : "Guardar cambios"}
+          {!isPending && (
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          )}
         </button>
       </div>
     </form>
