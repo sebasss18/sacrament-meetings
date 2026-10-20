@@ -1,8 +1,10 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #f5f8fc;
   --foreground: #172b4d;
+  color-scheme: light;
   --font-inter: Arial, Helvetica, sans-serif;
   --font-libre-baskerville: Georgia, "Times New Roman", serif;
 }
@@ -13,13 +15,6 @@
   --font-sans: var(--font-inter);
   --font-serif: var(--font-libre-baskerville);
   --font-mono: "Courier New", monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #10233f;
-    --foreground: #f4f7fb;
-  }
 }
 
 body {
