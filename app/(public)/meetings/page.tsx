@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import MeetingCard from "../../../components/MeetingCard";
-import { MeetingSearch } from "@/components/MeetingSearch";
-import { Pagination } from "@/components/Pagination";
+import MeetingCard from "@/components/meetings/MeetingCard";
+import { MeetingSearch } from "@/components/meetings/MeetingSearch";
+import { Pagination } from "@/components/meetings/Pagination";
 import { getMeetings, getMeetingsTotalPages } from "@/lib/meetings-db";
 
 export const metadata: Metadata = {

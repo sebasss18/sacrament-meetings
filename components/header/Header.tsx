@@ -1,9 +1,9 @@
 import NavLinks from "./NavLinks";
 import Link from "next/link";
 import { auth } from "@/auth";
-import SignOutButton from "./SignOutButton";
+import SignOutButton from "../login/SignOutButton";
 import HeaderScroll from "./HeaderScroll";
-import WardName from "./WardName";
+import WardName from "../ward/WardName";
 
 async function AuthControls() {
   const session = await auth();

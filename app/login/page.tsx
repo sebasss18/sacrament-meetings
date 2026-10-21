@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import LoginCard from "@/components/LoginCard";
-import LoginForm from "@/components/LoginForm";
+import LoginCard from "@/components/login/LoginCard";
+import LoginForm from "@/components/login/LoginForm";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión",

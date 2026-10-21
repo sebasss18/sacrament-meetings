@@ -1,7 +1,7 @@
 import "./globals.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import PageContainer from "../components/PageContainer";
+import Header from "@/components/header/Header";
+import Footer from "@/components/layout/Footer";
+import PageContainer from "@/components/layout/PageContainer";
 import { Inter, Libre_Baskerville } from "next/font/google";
 import type { Metadata } from "next";
 

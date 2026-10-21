@@ -1,7 +1,7 @@
 import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import MeetingDetail from "../../../../components/MeetingDetail";
+import MeetingDetail from "@/components/meetings/MeetingDetail";
 import { getMeetingById } from "@/lib/meetings-db";
 import { meetingTypeLabels } from "@/lib/labels";
 

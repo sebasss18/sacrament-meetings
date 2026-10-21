@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CreateMeetingForm from "@/components/CreateMeetingForm";
+import CreateMeetingForm from "@/components/meetings/CreateMeetingForm";
 
 export const metadata: Metadata = {
   title: "Crear reunión",

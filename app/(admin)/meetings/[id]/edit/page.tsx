@@ -1,7 +1,7 @@
 import { cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import EditMeeting from "@/components/EditMeeting";
+import EditMeeting from "@/components/meetings/EditMeeting";
 import { getMeetingById } from "@/lib/meetings-db";
 
 const getMeeting = cache(async (id: string) => {

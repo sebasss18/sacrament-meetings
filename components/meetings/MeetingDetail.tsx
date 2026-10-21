@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { auth } from "@/auth";
 import DeleteMeeting from "./DeleteMeeting";
-import type { SacramentMeeting } from "../lib/types";
-import { meetingTypeLabels, speakerTypeLabels } from "../lib/labels";
+import type { SacramentMeeting } from "@/lib/types";
+import { meetingTypeLabels, speakerTypeLabels } from "@/lib/labels";
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;

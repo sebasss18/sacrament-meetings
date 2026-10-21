@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import NavLinks from "./NavLinks";
-import SignOutButton from "./SignOutButton";
+import SignOutButton from "../login/SignOutButton";
 
 type HeaderClientProps = {
   isLoggedIn: boolean;

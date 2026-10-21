@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import MeetingsNavigation from "@/components/MeetingsNavigation";
+import MeetingsNavigation from "@/components/meetings/MeetingsNavigation";
 
 export default async function AdminLayout({
   children,

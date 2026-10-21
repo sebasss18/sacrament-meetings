@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MeetingDetail from "../../../../components/MeetingDetail";
+import MeetingDetail from "@/components/meetings/MeetingDetail";
 import { getMeetings } from "../../../../lib/meetings-db";
 
 export const metadata: Metadata = {
