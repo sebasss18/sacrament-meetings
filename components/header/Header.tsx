@@ -13,12 +13,22 @@ async function AuthControls() {
   ) : (
     <Link
       href="/login"
-      className="group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm transition-[transform,scale,box-shadow] duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/30 active:scale-100"
+      className="group inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow-sm outline-none transition-[transform,scale,box-shadow] duration-300 hover:scale-105 hover:shadow-lg hover:shadow-black/30 focus-visible:ring-2 focus-visible:ring-white/60 active:scale-100 motion-reduce:transform-none"
     >
       Iniciar sesión
-      <span className="transition-transform duration-300 group-hover:translate-x-1">
-        →
-      </span>
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+      >
+        <path d="M5 12h14" />
+        <path d="m13 6 6 6-6 6" />
+      </svg>
     </Link>
   );
 }
@@ -51,8 +61,9 @@ export default function Header() {
         <div className="max-sm:overflow-hidden max-sm:[height:calc(20px*(1_-_var(--p)))] max-sm:[opacity:calc(1_-_var(--p))]">
           <p className="flex items-center gap-2 text-sm capitalize text-white/60">
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-sky-300" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75 [animation-duration:1.5s]" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-50 [animation-duration:1.5s] [animation-delay:0.6s]" />
+              <span className="relative inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-sky-300 shadow-[0_0_8px_2px_rgba(56,189,248,0.8)]" />
             </span>
             {date}
           </p>

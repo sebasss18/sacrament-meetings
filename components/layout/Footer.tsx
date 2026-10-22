@@ -19,10 +19,6 @@ export default function Footer() {
         <div className="leading-tight">
           <p className="text-xl font-bold tracking-tight">Rio Sonora</p>
           <p className="mt-1.5 flex items-center justify-center gap-2 text-sm font-medium text-white/60 md:justify-start">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-300 opacity-75 motion-reduce:animate-none" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-sky-300" />
-            </span>
             Planificador de reuniones sacramentales
           </p>
         </div>

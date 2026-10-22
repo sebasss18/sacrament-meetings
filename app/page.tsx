@@ -33,7 +33,11 @@ export default function Home() {
         <div className="relative z-10 w-full px-6 py-20 sm:px-12 md:px-16 lg:px-20">
           <div className="max-w-3xl">
             <Reveal className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-slate-200 shadow-lg backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75 [animation-duration:1.5s]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-100 opacity-50 [animation-duration:1.5s] [animation-delay:0.6s]" />
+                <span className="relative inline-flex h-2 w-2 animate-pulse rounded-full bg-white shadow-[0_0_10px_2px_rgba(255,255,255,0.8)]" />
+              </span>
               Planificación y organización
             </Reveal>
 
@@ -73,26 +77,36 @@ export default function Home() {
             >
               <Link
                 href="/meetings"
-                className="group inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-4 font-semibold text-slate-900 shadow-xl shadow-black/10 transition-all duration-300 hover:scale-[1.02] hover:bg-slate-100"
+                className="group inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-4 font-semibold text-slate-900 shadow-xl shadow-black/10 outline-none transition-all duration-300 hover:scale-[1.02] hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-white/60 motion-reduce:transform-none"
               >
                 Ver reuniones
-                <span
+                <svg
                   aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:translate-x-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
                 >
-                  →
-                </span>
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
               </Link>
 
               <Link
                 href="/meetings/new"
-                className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/25 bg-white/10 px-7 py-4 font-semibold text-white shadow-lg backdrop-blur-md outline-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-102 hover:border-white/40 hover:bg-white/20 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-white/50 motion-reduce:transform-none"
+                className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/25 bg-white/10 px-7 py-4 font-semibold text-white shadow-lg backdrop-blur-md outline-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/20 hover:shadow-[0_10px_30px_-8px_rgba(255,255,255,0.35)] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:translate-y-0 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
               >
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[400%] motion-reduce:hidden"
+                  className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-b from-white/15 to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-100"
                 />
-
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-full -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-[400%] motion-reduce:hidden"
+                />
                 <span
                   aria-hidden="true"
                   className="relative inline-flex size-6 items-center justify-center text-xl leading-none transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-90 group-focus-visible:rotate-90 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-focus-visible:rotate-0"
@@ -103,12 +117,12 @@ export default function Home() {
               </Link>
             </Reveal>
 
-            <Reveal delay={950}>
+            <Reveal delay={800}>
               <WardNameForm />
             </Reveal>
 
             <Reveal
-              delay={1100}
+              delay={900}
               className="mt-14 flex items-center gap-4 border-t border-white/15 pt-6 text-sm text-slate-300 sm:mt-16"
             >
               <div className="flex -space-x-2" aria-hidden="true">

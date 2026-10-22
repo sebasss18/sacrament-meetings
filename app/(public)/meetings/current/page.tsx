@@ -29,10 +29,7 @@ export default async function CurrentMeetingPage() {
   return (
     <main>
       <h1 className="mb-6 text-3xl font-bold">Reunión actual</h1>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-800">
-        <MeetingDetail meeting={upcomingMeeting} />
-      </div>
+      <MeetingDetail meeting={upcomingMeeting} />
     </main>
   );
 }

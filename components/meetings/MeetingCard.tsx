@@ -34,7 +34,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
       </div>
 
       <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700 dark:border-slate-600 dark:bg-slate-700/50 dark:text-slate-200">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
         {meetingTypeLabels[meeting.meetingType]}
       </span>
 
