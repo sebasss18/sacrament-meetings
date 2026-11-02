@@ -6,5 +6,5 @@ const { auth } = NextAuth(authConfig);
 export default auth;
 
 export const config = {
-  matcher: ["/login", "/meetings/new", "/meetings/:id/edit"],
+  matcher: ["/login", "/meetings/:path*"],
 };

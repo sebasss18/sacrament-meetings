@@ -4,6 +4,10 @@ import Link from "next/link";
 import WardNameForm from "@/components/ward/WardNameForm";
 import RevealText from "@/components/animation/RevealText";
 import Reveal from "@/components/animation/Reveal";
+import ScrollLink from "@/components/navigation/ScrollLink";
+import UpcomingMeetingPreview from "@/components/meetings/UpcomingMeetingPreview";
+import { getNextMeetingPreview } from "@/lib/meetings-db";
+import { getTodayInMountainTime } from "@/lib/date-utils";
 
 export const metadata: Metadata = {
   title: "Inicio",
@@ -11,7 +15,11 @@ export const metadata: Metadata = {
     "Bienvenido al planificador de reuniones sacramentales para consultar las próximas reuniones y administrar los detalles del barrio.",
 };
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const upcomingMeeting = await getNextMeetingPreview(getTodayInMountainTime());
+
   return (
     <main className="relative -mt-2 flex flex-1 flex-col bg-slate-950 before:pointer-events-none before:absolute before:inset-x-0 before:-top-32 before:h-32 before:bg-slate-950 before:content-['']">
       <section className="relative isolate flex min-h-[calc(100dvh-80px)] w-full flex-1 items-center overflow-hidden bg-slate-950">
@@ -28,9 +36,9 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/10" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-b from-transparent to-slate-950" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-slate-950" />
 
-        <div className="relative z-10 w-full px-6 py-20 sm:px-12 md:px-16 lg:px-20">
+        <div className="relative z-10 w-full px-6 pt-20 pb-12 sm:px-12 md:px-16 lg:px-20">
           <div className="max-w-3xl">
             <h1 className="max-w-3xl text-4xl leading-[1.12] font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               <RevealText as="span" className="block">
@@ -66,11 +74,11 @@ export default function Home() {
               delay={800}
               className="mt-10 flex flex-col gap-4 sm:flex-row"
             >
-              <Link
-                href="/meetings"
+              <ScrollLink
+                targetId="proxima-reunion"
                 className="group inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-4 font-semibold text-slate-900 shadow-xl shadow-black/10 outline-none transition-all duration-300 hover:scale-[1.02] hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-white/60 motion-reduce:transform-none"
               >
-                Ver reuniones
+                Próxima reunión
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
@@ -84,7 +92,7 @@ export default function Home() {
                   <path d="M5 12h14" />
                   <path d="m13 6 6 6-6 6" />
                 </svg>
-              </Link>
+              </ScrollLink>
 
               <Link
                 href="/meetings/new"
@@ -135,6 +143,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <UpcomingMeetingPreview meeting={upcomingMeeting} />
     </main>
   );
 }

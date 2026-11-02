@@ -10,6 +10,7 @@ import {
   updateMeeting as updateMeetingDb,
   deleteMeeting as deleteMeetingDb,
 } from "@/lib/meetings-db";
+import { isAdminEmail } from "@/lib/auth-utils";
 
 export type FormState = {
   message: string;
@@ -40,10 +41,10 @@ export async function authenticate(
   }
 }
 
-async function requireOwnerSession() {
+async function requireAdminSession() {
   const session = await auth();
 
-  if (!session?.user) {
+  if (!isAdminEmail(session?.user?.email)) {
     redirect("/login");
   }
 }
@@ -159,7 +160,7 @@ export async function createMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
-  await requireOwnerSession();
+  await requireAdminSession();
 
   const result = validateMeeting(formData);
 
@@ -185,7 +186,7 @@ export async function updateMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
-  await requireOwnerSession();
+  await requireAdminSession();
 
   const result = validateMeeting(formData);
 
@@ -207,7 +208,7 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(id: number): Promise<FormState> {
-  await requireOwnerSession();
+  await requireAdminSession();
 
   try {
     await deleteMeetingDb(id);

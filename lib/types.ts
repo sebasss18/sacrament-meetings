@@ -38,3 +38,14 @@ export interface SacramentMeeting {
   closingHymn: Hymn;
   closingPrayer: string;
 }
+
+export type HomeMeetingPreview = Pick<
+  SacramentMeeting,
+  | "date"
+  | "openingHymn"
+  | "wardBusiness"
+  | "stakeBusiness"
+  | "sacramentHymn"
+  | "speakers"
+  | "closingHymn"
+>;

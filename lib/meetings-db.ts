@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import type { SacramentMeeting } from "./types";
+import type { HomeMeetingPreview, SacramentMeeting } from "./types";
 
 let sql: ReturnType<typeof neon> | null = null;
 
@@ -18,6 +18,29 @@ function getSql() {
 }
 
 const ITEMS_PER_PAGE = 6;
+
+export async function getNextMeetingPreview(
+  today: string,
+): Promise<HomeMeetingPreview | null> {
+  const rows = await getSql()`
+    SELECT
+      to_char(date, 'YYYY-MM-DD') AS "date",
+      opening_hymn AS "openingHymn",
+      ward_business AS "wardBusiness",
+      stake_business AS "stakeBusiness",
+      sacrament_hymn AS "sacramentHymn",
+      speakers,
+      closing_hymn AS "closingHymn"
+    FROM meetings
+    WHERE date >= ${today}
+    ORDER BY date ASC
+    LIMIT 1
+  `;
+
+  const meetingRows = rows as Array<Record<string, unknown>>;
+
+  return (meetingRows[0] as unknown as HomeMeetingPreview) ?? null;
+}
 
 export async function getMeetings(
   query: string = "",

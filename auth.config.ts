@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import { isAdminEmail } from "@/lib/auth-utils";
 
 export const authConfig = {
   pages: {
@@ -6,17 +7,16 @@ export const authConfig = {
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = Boolean(auth?.user);
+      const isAdmin = isAdminEmail(auth?.user?.email);
       const pathname = nextUrl.pathname;
-      const isProtected =
-        pathname === "/meetings/new" ||
-        /^\/meetings\/\d+\/edit$/.test(pathname);
+      const isMeetingsPage =
+        pathname === "/meetings" || pathname.startsWith("/meetings/");
 
-      if (isProtected && !isLoggedIn) {
+      if (isMeetingsPage && !isAdmin) {
         return false;
       }
 
-      if (isLoggedIn && pathname === "/login") {
+      if (isAdmin && pathname === "/login") {
         return Response.redirect(new URL("/meetings", nextUrl));
       }
 

@@ -6,11 +6,19 @@ import {
   updateMeeting,
 } from "@/lib/meetings-db";
 import { MeetingFormSchema } from "@/lib/schemas";
+import { isAdminEmail } from "@/lib/auth-utils";
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  if (!isAdminEmail((await auth())?.user?.email)) {
+    return NextResponse.json(
+      { error: "No tienes autorización para consultar las reuniones." },
+      { status: 401 },
+    );
+  }
+
   const { id } = await params;
   const meetingId = Number(id);
 
@@ -37,7 +45,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!(await auth())?.user) {
+  if (!isAdminEmail((await auth())?.user?.email)) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },
@@ -91,7 +99,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!(await auth())?.user) {
+  if (!isAdminEmail((await auth())?.user?.email)) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },

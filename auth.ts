@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
 import { getUserByEmail } from "@/lib/data";
+import { isAdminEmail } from "@/lib/auth-utils";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -22,6 +23,10 @@ export const { auth, signIn, signOut } = NextAuth({
         }
 
         const { email, password } = parsed.data;
+
+        if (!isAdminEmail(email)) {
+          return null;
+        }
 
         const user = await getUserByEmail(email);
 

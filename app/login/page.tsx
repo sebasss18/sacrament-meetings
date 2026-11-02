@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import LoginCard from "@/components/login/LoginCard";
 import LoginForm from "@/components/login/LoginForm";
 
@@ -19,8 +18,8 @@ const highlights = [
     ),
   },
   {
-    title: "Consulta pública",
-    text: "Los miembros pueden ver las reuniones sin necesidad de una cuenta.",
+    title: "Acceso privado",
+    text: "Solo el administrador puede consultar los detalles de las reuniones.",
     icon: (
       <>
         <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
@@ -133,15 +132,6 @@ export default function LoginPage() {
             <LoginForm />
           </div>
 
-          <div className="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
-            ¿Solo quieres consultar?{" "}
-            <Link
-              href="/meetings"
-              className="font-medium text-slate-900 underline underline-offset-4 outline-none hover:no-underline focus-visible:ring-2 focus-visible:ring-slate-400 dark:text-white"
-            >
-              Ver las reuniones
-            </Link>
-          </div>
         </LoginCard>
       </section>
     </main>
