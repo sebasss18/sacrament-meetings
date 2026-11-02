@@ -38,6 +38,7 @@ export async function getMeetings(
       opening_prayer AS "openingPrayer",
       ward_business AS "wardBusiness",
       stake_business AS "stakeBusiness",
+      callings,
       sacrament_hymn AS "sacramentHymn",
       speakers,
       closing_hymn AS "closingHymn",
@@ -48,6 +49,7 @@ export async function getMeetings(
       OR conducting ILIKE ${searchTerm}
       OR meeting_type ILIKE ${searchTerm}
       OR speakers::text ILIKE ${searchTerm}
+      OR callings::text ILIKE ${searchTerm}
     ORDER BY date DESC
     LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
   `;
@@ -67,6 +69,7 @@ export async function getMeetingsTotalPages(
       OR conducting ILIKE ${searchTerm}
       OR meeting_type ILIKE ${searchTerm}
       OR speakers::text ILIKE ${searchTerm}
+      OR callings::text ILIKE ${searchTerm}
   `;
 
   const countRows = rows as Array<{ count: string | number }>;
@@ -90,6 +93,7 @@ export async function getMeetingById(
       opening_prayer AS "openingPrayer",
       ward_business AS "wardBusiness",
       stake_business AS "stakeBusiness",
+      callings,
       sacrament_hymn AS "sacramentHymn",
       speakers,
       closing_hymn AS "closingHymn",
@@ -117,6 +121,7 @@ export async function createMeeting(
       opening_prayer,
       ward_business,
       stake_business,
+      callings,
       sacrament_hymn,
       speakers,
       closing_hymn,
@@ -132,6 +137,7 @@ export async function createMeeting(
       ${data.openingPrayer},
       ${JSON.stringify(data.wardBusiness)},
       ${data.stakeBusiness},
+      ${JSON.stringify(data.callings)},
       ${JSON.stringify(data.sacramentHymn)},
       ${JSON.stringify(data.speakers)},
       ${JSON.stringify(data.closingHymn)},
@@ -148,6 +154,7 @@ export async function createMeeting(
       opening_prayer AS "openingPrayer",
       ward_business AS "wardBusiness",
       stake_business AS "stakeBusiness",
+      callings,
       sacrament_hymn AS "sacramentHymn",
       speakers,
       closing_hymn AS "closingHymn",
@@ -175,6 +182,7 @@ export async function updateMeeting(
       opening_prayer = ${updates.openingPrayer},
       ward_business = ${JSON.stringify(updates.wardBusiness)},
       stake_business = ${updates.stakeBusiness},
+      callings = ${JSON.stringify(updates.callings)},
       sacrament_hymn = ${JSON.stringify(updates.sacramentHymn)},
       speakers = ${JSON.stringify(updates.speakers)},
       closing_hymn = ${JSON.stringify(updates.closingHymn)},
@@ -191,6 +199,7 @@ export async function updateMeeting(
       opening_prayer AS "openingPrayer",
       ward_business AS "wardBusiness",
       stake_business AS "stakeBusiness",
+      callings,
       sacrament_hymn AS "sacramentHymn",
       speakers,
       closing_hymn AS "closingHymn",

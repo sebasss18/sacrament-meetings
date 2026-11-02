@@ -15,9 +15,15 @@ export interface WardBusinessItem {
   description: string;
 }
 
+export interface CallingItem {
+  type: "release" | "calling";
+  name: string;
+  position: string;
+}
+
 export interface SacramentMeeting {
   id: number;
-  date: string; // ISO date string: 'YYYY-MM-DD'
+  date: string;
   meetingType: MeetingType;
   presiding: string;
   conducting: string;
@@ -26,6 +32,7 @@ export interface SacramentMeeting {
   openingPrayer: string;
   wardBusiness: WardBusinessItem[];
   stakeBusiness: boolean;
+  callings: CallingItem[];
   sacramentHymn: Hymn;
   speakers: SpeakerItem[];
   closingHymn: Hymn;

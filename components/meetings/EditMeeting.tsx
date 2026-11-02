@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useActionState, useRef, useState } from "react";
 import { updateMeeting, type FormState } from "@/lib/actions";
-import type { SacramentMeeting } from "@/lib/types";
+import type { CallingItem, SacramentMeeting } from "@/lib/types";
 
 interface EditMeetingProps {
   meeting: SacramentMeeting;
@@ -22,6 +22,43 @@ const inputClass =
 const cardInputClass = inputClass.replace("bg-slate-50", "bg-white");
 
 const dateInputClass = `${inputClass} block min-h-[2.75rem] min-w-0 max-w-full appearance-none text-left [&::-webkit-date-and-time-value]:min-h-[1.5em] [&::-webkit-date-and-time-value]:text-left`;
+
+const pillInputClass =
+  "rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-800 outline-none placeholder:text-slate-400 focus:border-slate-800 focus:ring-2 focus:ring-sky-300/60";
+
+const selectClass = "appearance-none cursor-pointer pr-10";
+
+const pillSelectClass = `${pillInputClass} appearance-none cursor-pointer pr-8`;
+
+function SelectWrapper({
+  children,
+  className = "",
+  compact = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`group relative ${className}`}>
+      {children}
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-500 transition-all duration-300 group-hover:text-slate-700 group-focus-within:rotate-180 group-focus-within:text-slate-800 ${
+          compact ? "right-2.5 h-3.5 w-3.5" : "right-3 h-4 w-4"
+        }`}
+      >
+        <path d="M5 7.5l5 5 5-5" />
+      </svg>
+    </div>
+  );
+}
 
 function FieldError({ id, errors }: { id: string; errors?: string[] }) {
   return (
@@ -64,6 +101,8 @@ type Speaker = {
   type: SacramentMeeting["speakers"][number]["type"];
 };
 
+type Calling = CallingItem & { id: number };
+
 export default function EditMeeting({ meeting }: EditMeetingProps) {
   const nextId = useRef(meeting.speakers.length);
   const [speakers, setSpeakers] = useState<Speaker[]>(() =>
@@ -72,6 +111,16 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
       name: speaker.name,
       topic: speaker.topic,
       type: speaker.type,
+    })),
+  );
+
+  const nextCallingId = useRef((meeting.callings ?? []).length);
+  const [callings, setCallings] = useState<Calling[]>(() =>
+    (meeting.callings ?? []).map((calling, index) => ({
+      id: index,
+      type: calling.type,
+      name: calling.name,
+      position: calling.position,
     })),
   );
 
@@ -99,6 +148,26 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
 
   const removeSpeaker = (id: number) =>
     setSpeakers((current) => current.filter((speaker) => speaker.id !== id));
+
+  const updateCalling = <K extends keyof Calling>(
+    id: number,
+    field: K,
+    value: Calling[K],
+  ) =>
+    setCallings((current) =>
+      current.map((calling) =>
+        calling.id === id ? { ...calling, [field]: value } : calling,
+      ),
+    );
+
+  const addCalling = () =>
+    setCallings((current) => [
+      ...current,
+      { id: nextCallingId.current++, type: "release", name: "", position: "" },
+    ]);
+
+  const removeCalling = (id: number) =>
+    setCallings((current) => current.filter((calling) => calling.id !== id));
 
   return (
     <form
@@ -149,20 +218,22 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
             <label htmlFor="meetingType" className={labelClass}>
               Tipo de reunión
             </label>
-            <select
-              id="meetingType"
-              name="meetingType"
-              required
-              defaultValue={meeting.meetingType}
-              aria-describedby="meetingType-error"
-              className={inputClass}
-            >
-              <option value="">Selecciona un tipo</option>
-              <option value="testimony">De testimonios</option>
-              <option value="regular">Regular</option>
-              <option value="stake">De estaca</option>
-              <option value="general">General</option>
-            </select>
+            <SelectWrapper>
+              <select
+                id="meetingType"
+                name="meetingType"
+                required
+                defaultValue={meeting.meetingType}
+                aria-describedby="meetingType-error"
+                className={`${inputClass} ${selectClass}`}
+              >
+                <option value="">Selecciona un tipo</option>
+                <option value="testimony">De testimonios</option>
+                <option value="regular">Regular</option>
+                <option value="stake">De estaca</option>
+                <option value="general">General</option>
+              </select>
+            </SelectWrapper>
             <FieldError
               id="meetingType-error"
               errors={state.errors?.meetingType}
@@ -333,6 +404,96 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
         />
       </Section>
 
+      <Section title="Relevos y llamamientos">
+        <div className="flex flex-wrap gap-3">
+          {callings.map((calling, index) => (
+            <div
+              key={calling.id}
+              className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-2 transition-shadow duration-300 hover:shadow-md sm:rounded-full sm:pl-3"
+            >
+              <label htmlFor={`callingType-${calling.id}`} className="sr-only">
+                Tipo
+              </label>
+              <SelectWrapper compact className="inline-block">
+                <select
+                  id={`callingType-${calling.id}`}
+                  name="callingType"
+                  value={calling.type}
+                  onChange={(event) =>
+                    updateCalling(
+                      calling.id,
+                      "type",
+                      event.target.value as Calling["type"],
+                    )
+                  }
+                  className={pillSelectClass}
+                >
+                  <option value="release">Relevo</option>
+                  <option value="calling">Llamamiento</option>
+                </select>
+              </SelectWrapper>
+
+              <label htmlFor={`callingName-${calling.id}`} className="sr-only">
+                Nombre
+              </label>
+              <input
+                id={`callingName-${calling.id}`}
+                name="callingName"
+                type="text"
+                required
+                value={calling.name}
+                onChange={(event) =>
+                  updateCalling(calling.id, "name", event.target.value)
+                }
+                placeholder="Nombre"
+                className={`${pillInputClass} w-40`}
+              />
+
+              <label
+                htmlFor={`callingPosition-${calling.id}`}
+                className="sr-only"
+              >
+                Llamamiento
+              </label>
+              <input
+                id={`callingPosition-${calling.id}`}
+                name="callingPosition"
+                type="text"
+                required
+                value={calling.position}
+                onChange={(event) =>
+                  updateCalling(calling.id, "position", event.target.value)
+                }
+                placeholder="Llamamiento"
+                className={`${pillInputClass} w-44`}
+              />
+
+              <button
+                type="button"
+                onClick={() => removeCalling(calling.id)}
+                aria-label={`Quitar relevo o llamamiento ${index + 1}`}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-slate-500 transition-all duration-300 hover:scale-110 hover:bg-red-50 hover:text-red-600 active:scale-100"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <FieldError id="callings-error" errors={state.errors?.callings} />
+
+        <button
+          type="button"
+          onClick={addCalling}
+          className="group mt-5 inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition-all duration-300 hover:scale-105 hover:border-slate-400 hover:bg-slate-100 hover:shadow-md active:scale-100"
+        >
+          <span className="text-lg leading-none transition-transform duration-300 group-hover:rotate-90">
+            +
+          </span>
+          Agregar relevo o llamamiento
+        </button>
+      </Section>
+
       <Section title="Sacramento">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
@@ -435,23 +596,25 @@ export default function EditMeeting({ meeting }: EditMeetingProps) {
                   >
                     Tipo
                   </label>
-                  <select
-                    id={`speakerType-${speaker.id}`}
-                    name="speakerType"
-                    aria-describedby={`speakerType-${speaker.id}-error`}
-                    value={speaker.type}
-                    onChange={(event) =>
-                      updateSpeaker(
-                        speaker.id,
-                        "type",
-                        event.target.value as Speaker["type"],
-                      )
-                    }
-                    className={cardInputClass}
-                  >
-                    <option value="speaker">Discursante</option>
-                    <option value="musical-number">Número musical</option>
-                  </select>
+                  <SelectWrapper>
+                    <select
+                      id={`speakerType-${speaker.id}`}
+                      name="speakerType"
+                      aria-describedby={`speakerType-${speaker.id}-error`}
+                      value={speaker.type}
+                      onChange={(event) =>
+                        updateSpeaker(
+                          speaker.id,
+                          "type",
+                          event.target.value as Speaker["type"],
+                        )
+                      }
+                      className={`${cardInputClass} ${selectClass}`}
+                    >
+                      <option value="speaker">Discursante</option>
+                      <option value="musical-number">Número musical</option>
+                    </select>
+                  </SelectWrapper>
                   <FieldError
                     id={`speakerType-${speaker.id}-error`}
                     errors={state.errors?.[`speakers.${index}.type`]}

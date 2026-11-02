@@ -17,6 +17,14 @@ export const WardBusinessItemSchema = z.object({
   description: z.string().min(1, "La descripción es obligatoria."),
 });
 
+export const CallingItemSchema = z.object({
+  type: z.enum(["release", "calling"], {
+    error: "Selecciona un tipo válido.",
+  }),
+  name: z.string().trim().min(1, "El nombre es obligatorio."),
+  position: z.string().trim().min(1, "El llamamiento es obligatorio."),
+});
+
 export const MeetingFormSchema = z.object({
   date: z.string().min(1, "La fecha es obligatoria."),
 
@@ -37,6 +45,8 @@ export const MeetingFormSchema = z.object({
   wardBusiness: z.array(WardBusinessItemSchema),
 
   stakeBusiness: z.boolean(),
+
+  callings: z.array(CallingItemSchema),
 
   sacramentHymn: HymnSchema,
 

@@ -53,18 +53,14 @@ export default function Header() {
             aria-hidden="true"
             className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap text-[11px] capitalize text-white/60 [max-width:calc(11rem*var(--d))] [opacity:var(--d)] [transform:translateX(calc(16px*(1_-_var(--d))))] sm:hidden"
           >
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sky-300" />
+            <span />
             {date}
           </span>
         </div>
 
         <div className="max-sm:overflow-hidden max-sm:[height:calc(20px*(1_-_var(--p)))] max-sm:[opacity:calc(1_-_var(--p))]">
           <p className="flex items-center gap-2 text-sm capitalize text-white/60">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75 [animation-duration:1.5s]" />
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-300 opacity-50 [animation-duration:1.5s] [animation-delay:0.6s]" />
-              <span className="relative inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-sky-300 shadow-[0_0_8px_2px_rgba(56,189,248,0.8)]" />
-            </span>
+            <span className="relative flex h-1"></span>
             {date}
           </p>
         </div>

@@ -61,112 +61,32 @@ function getAnnouncements(formData: FormData): string[] {
   );
 }
 
-export async function createMeeting(
-  prevState: FormState | undefined,
-  formData: FormData,
-): Promise<FormState> {
-  await requireOwnerSession();
+function getCallings(formData: FormData) {
+  const callingTypes = formData.getAll("callingType").map(String);
+  const callingNames = formData.getAll("callingName").map(String);
+  const callingPositions = formData.getAll("callingPosition").map(String);
 
-  const speakerNames = formData.getAll("speakerName").map(String);
-  const speakerTopics = formData.getAll("speakerTopic").map(String);
-  const speakerTypes = formData.getAll("speakerType").map(String);
-
-  const speakers = speakerNames.map((name, index) => ({
+  return callingNames.map((name, index) => ({
+    type: callingTypes[index] as "release" | "calling",
     name,
-    topic: speakerTopics[index],
-    type: speakerTypes[index] as "speaker" | "musical-number",
+    position: callingPositions[index] ?? "",
   }));
-
-  const data = {
-    date: formData.get("date"),
-    meetingType: formData.get("meetingType"),
-    presiding: formData.get("presiding"),
-    conducting: formData.get("conducting"),
-    announcements: formData.getAll("announcements").map(String),
-
-    openingHymn: {
-      number: Number(formData.get("openingHymnNumber")),
-      title: String(formData.get("openingHymnTitle")),
-    },
-
-    openingPrayer: formData.get("openingPrayer"),
-
-    wardBusiness: String(formData.get("wardBusiness") || "")
-      .split("\n")
-      .map((description) => ({
-        description: description.trim(),
-      }))
-      .filter((item) => item.description),
-
-    stakeBusiness: formData.get("stakeBusiness") === "true",
-
-    sacramentHymn: {
-      number: Number(formData.get("sacramentHymnNumber")),
-      title: String(formData.get("sacramentHymnTitle")),
-    },
-
-    speakers,
-
-    closingHymn: {
-      number: Number(formData.get("closingHymnNumber")),
-      title: String(formData.get("closingHymnTitle")),
-    },
-
-    closingPrayer: formData.get("closingPrayer"),
-  };
-
-  const validation = MeetingFormSchema.safeParse(data);
-
-  if (!validation.success) {
-    const errors: Record<string, string[]> = {};
-
-    validation.error.issues.forEach((issue) => {
-      const path = issue.path.join(".");
-
-      if (!errors[path]) {
-        errors[path] = [];
-      }
-
-      errors[path].push(issue.message);
-    });
-
-    return {
-      message: "Corrige los errores del formulario.",
-      errors,
-    };
-  }
-
-  try {
-    await createMeetingDb(validation.data);
-  } catch {
-    return {
-      message: "No se pudo crear la reunión. Inténtalo de nuevo.",
-      errors: {},
-    };
-  }
-
-  revalidatePath("/meetings");
-  redirect("/meetings");
 }
 
-export async function updateMeeting(
-  id: number,
-  prevState: FormState | undefined,
-  formData: FormData,
-): Promise<FormState> {
-  await requireOwnerSession();
-
+function getSpeakers(formData: FormData) {
   const speakerNames = formData.getAll("speakerName").map(String);
   const speakerTopics = formData.getAll("speakerTopic").map(String);
   const speakerTypes = formData.getAll("speakerType").map(String);
 
-  const speakers = speakerNames.map((name, index) => ({
+  return speakerNames.map((name, index) => ({
     name,
     topic: speakerTopics[index],
     type: speakerTypes[index] as "speaker" | "musical-number",
   }));
+}
 
-  const data = {
+function getMeetingData(formData: FormData) {
+  return {
     date: formData.get("date"),
     meetingType: formData.get("meetingType"),
     presiding: formData.get("presiding"),
@@ -189,12 +109,14 @@ export async function updateMeeting(
 
     stakeBusiness: formData.get("stakeBusiness") === "true",
 
+    callings: getCallings(formData),
+
     sacramentHymn: {
       number: Number(formData.get("sacramentHymnNumber")),
       title: String(formData.get("sacramentHymnTitle")),
     },
 
-    speakers,
+    speakers: getSpeakers(formData),
 
     closingHymn: {
       number: Number(formData.get("closingHymnNumber")),
@@ -203,30 +125,76 @@ export async function updateMeeting(
 
     closingPrayer: formData.get("closingPrayer"),
   };
+}
 
-  const validation = MeetingFormSchema.safeParse(data);
+function validateMeeting(formData: FormData) {
+  const validation = MeetingFormSchema.safeParse(getMeetingData(formData));
 
-  if (!validation.success) {
-    const errors: Record<string, string[]> = {};
+  if (validation.success) {
+    return { success: true as const, data: validation.data };
+  }
 
-    validation.error.issues.forEach((issue) => {
-      const path = issue.path.join(".");
+  const errors: Record<string, string[]> = {};
 
-      if (!errors[path]) {
-        errors[path] = [];
-      }
+  validation.error.issues.forEach((issue) => {
+    const path = issue.path.join(".");
 
-      errors[path].push(issue.message);
-    });
+    if (!errors[path]) {
+      errors[path] = [];
+    }
 
-    return {
+    errors[path].push(issue.message);
+  });
+
+  return {
+    success: false as const,
+    state: {
       message: "Corrige los errores del formulario.",
       errors,
-    };
+    } satisfies FormState,
+  };
+}
+
+export async function createMeeting(
+  prevState: FormState | undefined,
+  formData: FormData,
+): Promise<FormState> {
+  await requireOwnerSession();
+
+  const result = validateMeeting(formData);
+
+  if (!result.success) {
+    return result.state;
   }
 
   try {
-    await updateMeetingDb(id, validation.data);
+    await createMeetingDb(result.data);
+  } catch {
+    return {
+      message: "No se pudo crear la reunión. Inténtalo de nuevo.",
+      errors: {},
+    };
+  }
+
+  revalidatePath("/meetings");
+  redirect("/meetings");
+}
+
+export async function updateMeeting(
+  id: number,
+  prevState: FormState | undefined,
+  formData: FormData,
+): Promise<FormState> {
+  await requireOwnerSession();
+
+  const result = validateMeeting(formData);
+
+  if (!result.success) {
+    return result.state;
+  }
+
+  try {
+    await updateMeetingDb(id, result.data);
   } catch {
     return {
       message: "No se pudo actualizar la reunión. Inténtalo de nuevo.",

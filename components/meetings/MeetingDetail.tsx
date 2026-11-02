@@ -2,12 +2,17 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { auth } from "@/auth";
 import DeleteMeeting from "./DeleteMeeting";
-import type { SacramentMeeting } from "@/lib/types";
+import type { CallingItem, SacramentMeeting } from "@/lib/types";
 import { meetingTypeLabels, speakerTypeLabels } from "@/lib/labels";
 
 interface MeetingDetailProps {
   meeting: SacramentMeeting;
 }
+
+const callingTypeLabels: Record<CallingItem["type"], string> = {
+  release: "Relevo",
+  calling: "Llamamiento",
+};
 
 function Section({
   title,
@@ -79,6 +84,8 @@ export default async function MeetingDetail({ meeting }: MeetingDetailProps) {
     { dateStyle: "long" },
   );
 
+  const callings = meeting.callings ?? [];
+
   return (
     <div className="mx-auto w-full max-w-3xl">
       <Link
@@ -148,6 +155,31 @@ export default async function MeetingDetail({ meeting }: MeetingDetailProps) {
             {meeting.stakeBusiness ? "Sí" : "No"}
           </span>
         </Section>
+
+        {callings.length > 0 && (
+          <Section title="Relevos y llamamientos">
+            <ul className="space-y-3">
+              {callings.map((calling, index) => (
+                <li
+                  key={index}
+                  className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4"
+                >
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
+                      calling.type === "release"
+                        ? "bg-slate-100 text-slate-600 ring-slate-200"
+                        : "bg-sky-50 text-sky-700 ring-sky-200"
+                    }`}
+                  >
+                    {callingTypeLabels[calling.type]}
+                  </span>
+                  <p className="font-semibold text-slate-800">{calling.name}</p>
+                  <p className="text-slate-600">{calling.position}</p>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        )}
 
         <Section title="Santa Cena">
           <Hymn hymn={meeting.sacramentHymn} />

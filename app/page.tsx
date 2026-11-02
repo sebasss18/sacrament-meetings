@@ -32,15 +32,6 @@ export default function Home() {
 
         <div className="relative z-10 w-full px-6 py-20 sm:px-12 md:px-16 lg:px-20">
           <div className="max-w-3xl">
-            <Reveal className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-slate-200 shadow-lg backdrop-blur-md">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75 [animation-duration:1.5s]" />
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-100 opacity-50 [animation-duration:1.5s] [animation-delay:0.6s]" />
-                <span className="relative inline-flex h-2 w-2 animate-pulse rounded-full bg-white shadow-[0_0_10px_2px_rgba(255,255,255,0.8)]" />
-              </span>
-              Planificación y organización
-            </Reveal>
-
             <h1 className="max-w-3xl text-4xl leading-[1.12] font-semibold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               <RevealText as="span" className="block">
                 Cada reunión,
