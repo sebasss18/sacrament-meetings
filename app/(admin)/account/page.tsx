@@ -1,4 +1,4 @@
-// Administrator account settings page.
+// Private account settings page.
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
@@ -17,12 +17,12 @@ export const metadata: Metadata = {
 export default async function AccountPage() {
   const session = await auth();
   const userId = Number(session?.user?.id);
-  const isValidAdmin =
-    session?.user?.isAdmin === true &&
+  const isValidUser =
+    Boolean(session?.user?.id) &&
     Number.isSafeInteger(userId) &&
     userId > 0;
 
-  if (!isValidAdmin) {
+  if (!isValidUser) {
     redirect("/login");
   }
 
@@ -38,7 +38,7 @@ export default async function AccountPage() {
         <header className="md:sticky md:top-24 md:self-start">
           <UserAvatar seed={user.email} className="size-24" />
           <p className="mt-8 text-sm font-medium text-sky-600 dark:text-sky-400">
-            Administración
+            Cuenta privada
           </p>
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
             Mi cuenta

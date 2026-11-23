@@ -10,7 +10,7 @@ export default async function MeetingsLayout({
 }>) {
   const session = await auth();
 
-  if (session?.user?.isAdmin !== true) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 

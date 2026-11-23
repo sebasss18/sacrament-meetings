@@ -4,10 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
-import {
-  claimOrVerifyAdminAccount,
-  getUserByEmail,
-} from "@/lib/data";
+import { getUserByEmail } from "@/lib/data";
 
 const credentialsSchema = z.object({
   email: z.string().trim().email().transform((email) => email.toLowerCase()),
@@ -39,17 +36,10 @@ export const { auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const isAdmin = await claimOrVerifyAdminAccount(user.id, user.email);
-
-        if (!isAdmin) {
-          return null;
-        }
-
         return {
           id: String(user.id),
           email: user.email,
           name: "Meeting Owner",
-          isAdmin: true,
         };
       },
     }),

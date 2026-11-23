@@ -1,4 +1,4 @@
-// Auth.js callbacks and route authorization.
+// Auth.js session callbacks and private-route authorization.
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
@@ -9,7 +9,6 @@ export const authConfig = {
     jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
-        token.isAdmin = user.isAdmin === true;
       }
 
       return token;
@@ -17,23 +16,22 @@ export const authConfig = {
     session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub ?? "";
-        session.user.isAdmin = token.isAdmin === true;
       }
 
       return session;
     },
     authorized({ auth, request: { nextUrl } }) {
-      const isAdmin = auth?.user?.isAdmin === true;
+      const isAuthenticated = Boolean(auth?.user?.id);
       const pathname = nextUrl.pathname;
       const isMeetingsPage =
         pathname === "/meetings" || pathname.startsWith("/meetings/");
       const isAccountPage = pathname === "/account";
 
-      if ((isMeetingsPage || isAccountPage) && !isAdmin) {
+      if ((isMeetingsPage || isAccountPage) && !isAuthenticated) {
         return false;
       }
 
-      if (isAdmin && pathname === "/login") {
+      if (isAuthenticated && pathname === "/login") {
         return Response.redirect(new URL("/meetings", nextUrl));
       }
 

@@ -1,4 +1,4 @@
-// Site header and administrator actions.
+// Site header and signed-in user actions.
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
@@ -12,14 +12,12 @@ async function AuthControls() {
 
   return session?.user ? (
     <div className="flex items-center gap-2">
-      {session.user.isAdmin && (
-        <Link
-          href="/account"
-          className="inline-flex h-9 items-center rounded-full border border-white/15 px-3 text-sm text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-10 sm:px-4"
-        >
-          Mi cuenta
-        </Link>
-      )}
+      <Link
+        href="/account"
+        className="inline-flex h-9 items-center rounded-full border border-white/15 px-3 text-sm text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-10 sm:px-4"
+      >
+        Mi cuenta
+      </Link>
       <SignOutButton />
     </div>
   ) : (

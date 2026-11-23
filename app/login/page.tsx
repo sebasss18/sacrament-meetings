@@ -1,3 +1,4 @@
+// Private-user login page.
 import type { Metadata } from "next";
 import LoginCard from "@/components/login/LoginCard";
 import LoginForm from "@/components/login/LoginForm";
@@ -19,7 +20,7 @@ const highlights = [
   },
   {
     title: "Acceso privado",
-    text: "Solo el administrador puede consultar los detalles de las reuniones.",
+    text: "Solo las cuentas registradas pueden consultar los detalles de las reuniones.",
     icon: (
       <>
         <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
@@ -29,7 +30,7 @@ const highlights = [
   },
   {
     title: "Edición protegida",
-    text: "Solo el administrador puede crear, editar o eliminar reuniones.",
+    text: "Las cuentas registradas pueden crear, editar o eliminar reuniones.",
     icon: (
       <>
         <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" />
@@ -42,7 +43,7 @@ const highlights = [
 export default function LoginPage() {
   return (
     <main className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
-      {/* Panel de contenido: solo escritorio */}
+
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-slate-900 p-12 text-white lg:flex xl:p-16">
         <div
           aria-hidden="true"
@@ -97,7 +98,6 @@ export default function LoginPage() {
         </p>
       </aside>
 
-      {/* Lado del formulario: fondo con puntos y tarjeta */}
       <section className="relative flex items-center justify-center bg-slate-50 px-4 py-12 dark:bg-slate-950 sm:px-10">
         <div
           aria-hidden="true"
@@ -125,7 +125,7 @@ export default function LoginPage() {
             Iniciar sesión
           </h2>
           <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
-            Acceso solo para el administrador.
+            Inicia sesión con una cuenta privada registrada.
           </p>
 
           <div className="mt-8">

@@ -1,4 +1,4 @@
-// Guards administrator-only pages.
+// Guards private pages.
 import { auth } from "@/auth";
 import MeetingsNavigation from "@/components/meetings/MeetingsNavigation";
 import { redirect } from "next/navigation";
@@ -10,7 +10,7 @@ export default async function AdminLayout({
 }>) {
   const session = await auth();
 
-  if (session?.user?.isAdmin !== true) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 

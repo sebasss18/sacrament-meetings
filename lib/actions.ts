@@ -56,20 +56,20 @@ export async function authenticate(
   }
 }
 
-async function requireAdminSession() {
+async function requireUserSession() {
   const session = await auth();
 
-  if (session?.user?.isAdmin !== true) {
+  if (!session?.user?.id) {
     redirect("/login");
   }
 }
 
-async function requireAdminAccount() {
+async function requireCurrentUser() {
   const session = await auth();
   const userId = Number(session?.user?.id);
 
   if (
-    session?.user?.isAdmin !== true ||
+    !session?.user?.id ||
     !Number.isSafeInteger(userId) ||
     userId < 1
   ) {
@@ -98,7 +98,7 @@ export async function updateAccountEmail(
   _previousState: AccountActionState,
   formData: FormData,
 ): Promise<AccountActionState> {
-  const user = await requireAdminAccount();
+  const user = await requireCurrentUser();
   const validation = AccountEmailSchema.safeParse({
     email: formData.get("email"),
     currentPassword: String(formData.get("currentPassword") ?? ""),
@@ -157,7 +157,7 @@ export async function updateAccountPassword(
   _previousState: AccountActionState,
   formData: FormData,
 ): Promise<AccountActionState> {
-  const user = await requireAdminAccount();
+  const user = await requireCurrentUser();
   const validation = AccountPasswordSchema.safeParse({
     currentPassword: String(formData.get("currentPassword") ?? ""),
     newPassword: String(formData.get("newPassword") ?? ""),
@@ -301,7 +301,7 @@ export async function createMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
-  await requireAdminSession();
+  await requireUserSession();
 
   const result = validateMeeting(formData);
 
@@ -327,7 +327,7 @@ export async function updateMeeting(
   prevState: FormState | undefined,
   formData: FormData,
 ): Promise<FormState> {
-  await requireAdminSession();
+  await requireUserSession();
 
   const result = validateMeeting(formData);
 
@@ -349,7 +349,7 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(id: number): Promise<FormState> {
-  await requireAdminSession();
+  await requireUserSession();
 
   try {
     await deleteMeetingDb(id);

@@ -1,4 +1,4 @@
-// Protects administrator routes before they render.
+// Protects private routes before they render.
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 

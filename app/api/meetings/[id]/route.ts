@@ -12,7 +12,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if ((await auth())?.user?.isAdmin !== true) {
+  if (!(await auth())?.user?.id) {
     return NextResponse.json(
       { error: "No tienes autorización para consultar las reuniones." },
       { status: 401 },
@@ -45,7 +45,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if ((await auth())?.user?.isAdmin !== true) {
+  if (!(await auth())?.user?.id) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },
@@ -99,7 +99,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if ((await auth())?.user?.isAdmin !== true) {
+  if (!(await auth())?.user?.id) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },
