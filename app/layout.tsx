@@ -66,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${inter.variable} ${libreBaskerville.variable} flex min-h-screen flex-col`}
+        className={`${inter.variable} ${libreBaskerville.variable} flex min-h-dvh flex-col bg-slate-950`}
       >
         <Header />
 

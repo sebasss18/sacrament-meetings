@@ -22,6 +22,16 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), Arial, sans-serif;
 }
+
+html,
+body {
+  min-height: 100%;
+  overscroll-behavior-y: none;
+}
+
+html {
+  background: #020617;
+}
 .reveal-ltr {
   clip-path: inset(-0.2em 100% -0.2em 0);
   opacity: 0;
