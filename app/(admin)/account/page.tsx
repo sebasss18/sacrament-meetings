@@ -40,9 +40,6 @@ export default async function AccountPage() {
           <p className="mt-8 text-sm font-medium text-sky-600 dark:text-sky-400">
             Cuenta privada
           </p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">
-            Mi cuenta
-          </h1>
           <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-400">
             {description}
           </p>
