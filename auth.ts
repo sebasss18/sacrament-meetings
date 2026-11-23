@@ -1,13 +1,16 @@
+// Credentials authentication and account lookup.
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { authConfig } from "./auth.config";
-import { getUserByEmail } from "@/lib/data";
-import { isAdminEmail } from "@/lib/auth-utils";
+import {
+  claimOrVerifyAdminAccount,
+  getUserByEmail,
+} from "@/lib/data";
 
 const credentialsSchema = z.object({
-  email: z.string().email(),
+  email: z.string().trim().email().transform((email) => email.toLowerCase()),
   password: z.string().min(8),
 });
 
@@ -24,10 +27,6 @@ export const { auth, signIn, signOut } = NextAuth({
 
         const { email, password } = parsed.data;
 
-        if (!isAdminEmail(email)) {
-          return null;
-        }
-
         const user = await getUserByEmail(email);
 
         if (!user) {
@@ -40,10 +39,17 @@ export const { auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        const isAdmin = await claimOrVerifyAdminAccount(user.id, user.email);
+
+        if (!isAdmin) {
+          return null;
+        }
+
         return {
           id: String(user.id),
           email: user.email,
           name: "Meeting Owner",
+          isAdmin: true,
         };
       },
     }),

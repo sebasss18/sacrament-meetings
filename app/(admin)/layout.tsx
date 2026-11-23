@@ -1,6 +1,6 @@
+// Guards administrator-only pages.
 import { auth } from "@/auth";
 import MeetingsNavigation from "@/components/meetings/MeetingsNavigation";
-import { isAdminEmail } from "@/lib/auth-utils";
 import { redirect } from "next/navigation";
 
 export default async function AdminLayout({
@@ -10,7 +10,7 @@ export default async function AdminLayout({
 }>) {
   const session = await auth();
 
-  if (!isAdminEmail(session?.user?.email)) {
+  if (session?.user?.isAdmin !== true) {
     redirect("/login");
   }
 

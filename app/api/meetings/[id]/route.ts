@@ -1,3 +1,4 @@
+// API handlers for an individual meeting.
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import {
@@ -6,13 +7,12 @@ import {
   updateMeeting,
 } from "@/lib/meetings-db";
 import { MeetingFormSchema } from "@/lib/schemas";
-import { isAdminEmail } from "@/lib/auth-utils";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!isAdminEmail((await auth())?.user?.email)) {
+  if ((await auth())?.user?.isAdmin !== true) {
     return NextResponse.json(
       { error: "No tienes autorización para consultar las reuniones." },
       { status: 401 },
@@ -45,7 +45,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!isAdminEmail((await auth())?.user?.email)) {
+  if ((await auth())?.user?.isAdmin !== true) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },
@@ -99,7 +99,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  if (!isAdminEmail((await auth())?.user?.email)) {
+  if ((await auth())?.user?.isAdmin !== true) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },

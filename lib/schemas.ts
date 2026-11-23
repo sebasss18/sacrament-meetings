@@ -1,3 +1,4 @@
+// Validation schemas for meetings and account settings.
 import { z } from "zod";
 
 export const HymnSchema = z.object({
@@ -56,3 +57,25 @@ export const MeetingFormSchema = z.object({
 
   closingPrayer: z.string().min(1, "La oración final es obligatoria."),
 });
+
+export const AccountEmailSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email("Ingresa un correo electrónico válido.")
+    .transform((email) => email.toLowerCase()),
+  currentPassword: z.string().min(1, "Ingresa tu contraseña actual."),
+});
+
+export const AccountPasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Ingresa tu contraseña actual."),
+    newPassword: z
+      .string()
+      .min(8, "La nueva contraseña debe tener al menos 8 caracteres."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Las contraseñas nuevas no coinciden.",
+  });

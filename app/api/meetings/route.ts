@@ -1,11 +1,11 @@
+// API handlers for meeting collection requests.
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { createMeeting, getMeetings } from "@/lib/meetings-db";
 import { MeetingFormSchema } from "@/lib/schemas";
-import { isAdminEmail } from "@/lib/auth-utils";
 
 export async function GET(request: Request) {
-  if (!isAdminEmail((await auth())?.user?.email)) {
+  if ((await auth())?.user?.isAdmin !== true) {
     return NextResponse.json(
       { error: "No tienes autorización para consultar las reuniones." },
       { status: 401 },
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!isAdminEmail((await auth())?.user?.email)) {
+  if ((await auth())?.user?.isAdmin !== true) {
     return NextResponse.json(
       { error: "No has iniciado sesión." },
       { status: 401 },

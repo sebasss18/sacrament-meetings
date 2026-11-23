@@ -1,20 +1,35 @@
+// Server actions for authentication, account settings, and meetings.
 "use server";
-
+import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { auth, signIn, signOut } from "@/auth";
-import { MeetingFormSchema } from "@/lib/schemas";
+import {
+  AccountEmailSchema,
+  AccountPasswordSchema,
+  MeetingFormSchema,
+} from "@/lib/schemas";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+  getUserByEmail,
+  getUserById,
+  updateUserEmail,
+  updateUserPassword,
+} from "@/lib/data";
 import {
   createMeeting as createMeetingDb,
   updateMeeting as updateMeetingDb,
   deleteMeeting as deleteMeetingDb,
 } from "@/lib/meetings-db";
-import { isAdminEmail } from "@/lib/auth-utils";
 
 export type FormState = {
   message: string;
   errors?: Record<string, string[]>;
+};
+
+export type AccountActionState = {
+  status: "error" | "success" | "idle";
+  message: string;
 };
 
 export async function authenticate(
@@ -44,9 +59,135 @@ export async function authenticate(
 async function requireAdminSession() {
   const session = await auth();
 
-  if (!isAdminEmail(session?.user?.email)) {
+  if (session?.user?.isAdmin !== true) {
     redirect("/login");
   }
+}
+
+async function requireAdminAccount() {
+  const session = await auth();
+  const userId = Number(session?.user?.id);
+
+  if (
+    session?.user?.isAdmin !== true ||
+    !Number.isSafeInteger(userId) ||
+    userId < 1
+  ) {
+    redirect("/login");
+  }
+
+  const user = await getUserById(userId);
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  return user;
+}
+
+function isUniqueConstraintError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === "23505"
+  );
+}
+
+export async function updateAccountEmail(
+  _previousState: AccountActionState,
+  formData: FormData,
+): Promise<AccountActionState> {
+  const user = await requireAdminAccount();
+  const validation = AccountEmailSchema.safeParse({
+    email: formData.get("email"),
+    currentPassword: String(formData.get("currentPassword") ?? ""),
+  });
+
+  if (!validation.success) {
+    return {
+      status: "error",
+      message: validation.error.issues[0]?.message ?? "Revisa los datos.",
+    };
+  }
+
+  const passwordsMatch = await bcrypt.compare(
+    validation.data.currentPassword,
+    user.password,
+  );
+
+  if (!passwordsMatch) {
+    return {
+      status: "error",
+      message: "La contraseña actual no es correcta.",
+    };
+  }
+
+  if (validation.data.email === user.email.toLowerCase()) {
+    return { status: "success", message: "Ese ya es el correo de tu cuenta." };
+  }
+
+  const existingUser = await getUserByEmail(validation.data.email);
+
+  if (existingUser && existingUser.id !== user.id) {
+    return {
+      status: "error",
+      message: "Ese correo ya está registrado.",
+    };
+  }
+
+  try {
+    await updateUserEmail(user.id, validation.data.email);
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return {
+        status: "error",
+        message: "Ese correo ya está registrado.",
+      };
+    }
+
+    throw error;
+  }
+
+  revalidatePath("/account");
+  return { status: "success", message: "Correo actualizado." };
+}
+
+export async function updateAccountPassword(
+  _previousState: AccountActionState,
+  formData: FormData,
+): Promise<AccountActionState> {
+  const user = await requireAdminAccount();
+  const validation = AccountPasswordSchema.safeParse({
+    currentPassword: String(formData.get("currentPassword") ?? ""),
+    newPassword: String(formData.get("newPassword") ?? ""),
+    confirmPassword: String(formData.get("confirmPassword") ?? ""),
+  });
+
+  if (!validation.success) {
+    return {
+      status: "error",
+      message: validation.error.issues[0]?.message ?? "Revisa los datos.",
+    };
+  }
+
+  const passwordsMatch = await bcrypt.compare(
+    validation.data.currentPassword,
+    user.password,
+  );
+
+  if (!passwordsMatch) {
+    return {
+      status: "error",
+      message: "La contraseña actual no es correcta.",
+    };
+  }
+
+  const passwordHash = await bcrypt.hash(validation.data.newPassword, 12);
+  await updateUserPassword(user.id, passwordHash);
+  revalidatePath("/account");
+
+  return { status: "success", message: "Contraseña actualizada." };
 }
 
 export async function signOutAction() {

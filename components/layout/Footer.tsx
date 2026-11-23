@@ -1,11 +1,17 @@
 import Link from "next/link";
 
+const appName = "Planificador de reuniones sacramentales";
+
 const links = [
   { href: "/meetings", label: "Reuniones" },
   { href: "/login", label: "Administrar" },
 ];
 
-export default function Footer() {
+type FooterProps = {
+  wardName?: string;
+};
+
+export default function Footer({ wardName }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -15,21 +21,28 @@ export default function Footer() {
         className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:40px_40px] [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]"
       />
 
-      <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 py-10 text-center sm:px-12 md:flex-row md:justify-between md:text-left lg:px-16">
-        <div className="leading-tight">
-          <p className="text-xl font-bold tracking-tight">Rio Sonora</p>
-          <p className="mt-1.5 flex items-center justify-center gap-2 text-sm font-medium text-white/60 md:justify-start">
-            Planificador de reuniones sacramentales
+      <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:px-12 md:grid-cols-[1.5fr_1fr] lg:px-16">
+        <div>
+          <p className="text-xl font-bold tracking-tight">
+            {wardName ?? appName}
           </p>
+          {wardName && (
+            <p className="mt-1.5 text-sm font-medium text-white/60">
+              {appName}
+            </p>
+          )}
         </div>
 
         <nav aria-label="Pie de página">
-          <ul className="flex items-center gap-2">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-white/40">
+            Navegación
+          </h2>
+          <ul className="mt-4 space-y-2.5">
             {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="rounded-full border border-white/10 px-4 py-2 text-sm font-medium text-white/70 outline-none transition-colors hover:border-white/20 hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-sky-300/60"
+                  className="text-sm font-medium text-white/70 outline-none transition-colors hover:text-white focus-visible:text-white focus-visible:underline"
                 >
                   {link.label}
                 </Link>
@@ -41,7 +54,7 @@ export default function Footer() {
 
       <div className="relative border-t border-white/5">
         <p className="mx-auto max-w-6xl px-6 py-4 text-center text-xs font-medium text-white/50 sm:px-12 md:text-left lg:px-16">
-          © {year} Rio Sonora. Todos los derechos reservados.
+          © {year} {wardName ?? appName}. Todos los derechos reservados.
         </p>
       </div>
     </footer>

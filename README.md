@@ -23,7 +23,7 @@ not set; locally, it defaults to `http://localhost:3000`.
 Authentication uses Auth.js v5 credentials. Keep the existing database settings in `.env.local`; add the following values to that file (or your deployment environment):
 
 - `AUTH_SECRET`: generate with `npx auth secret`.
-- `AUTH_EMAIL` (optional): restrict meeting access to this administrator email. If omitted, any account that can authenticate with the configured credentials database is treated as the administrator.
+- `AUTH_EMAIL` (optional): restricts which email can claim the administrator account on its first sign-in. If omitted, the first account that successfully signs in claims it. The administrator's database ID is then stored so changing the email in the app does not change account ownership.
 - `AUTH_PASSWORD_HASH`: a bcrypt hash, never the plain-text password.
 
 Generate the hash interactively; password input is hidden and the password is not written to disk:
@@ -37,6 +37,7 @@ Copy the resulting hash into `AUTH_PASSWORD_HASH` in `.env.local`. The password 
 ## Protected access
 
 - All `/meetings` pages redirect visitors who are not signed in as the configured administrator to `/login`.
+- The administrator can change the account email and password at `/account`; both changes require the current password. The app creates its administrator identity table at first sign-in.
 - Meeting read APIs and create, update, and delete operations verify the administrator on the server.
 - After sign-in, the owner returns to `/meetings`; sign-out clears the session and returns to `/`.
 
