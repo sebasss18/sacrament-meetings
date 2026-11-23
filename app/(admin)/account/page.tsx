@@ -18,9 +18,7 @@ export default async function AccountPage() {
   const session = await auth();
   const userId = Number(session?.user?.id);
   const isValidUser =
-    Boolean(session?.user?.id) &&
-    Number.isSafeInteger(userId) &&
-    userId > 0;
+    Boolean(session?.user?.id) && Number.isSafeInteger(userId) && userId > 0;
 
   if (!isValidUser) {
     redirect("/login");
@@ -37,9 +35,9 @@ export default async function AccountPage() {
       <div className="grid gap-10 md:grid-cols-[1fr_1.6fr] md:gap-16">
         <header className="md:sticky md:top-24 md:self-start">
           <UserAvatar seed={user.email} className="size-24" />
-          <p className="mt-8 text-sm font-medium text-sky-600 dark:text-sky-400">
+          <h1 className="mt-8 text-sm font-medium text-sky-600 dark:text-sky-400">
             Cuenta privada
-          </p>
+          </h1>
           <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-400">
             {description}
           </p>
